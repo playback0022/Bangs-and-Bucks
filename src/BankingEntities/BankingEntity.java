@@ -1,6 +1,7 @@
 package BankingEntities;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public abstract class BankingEntity {
     private static int numberOfInstantiatedEntities = 0;
@@ -9,10 +10,10 @@ public abstract class BankingEntity {
     private String phoneNumber;
     private Date joinDate;
 
-    public BankingEntity(String email, String phoneNumber, String address) {
+    public BankingEntity(String email, String phoneNumber) {
         this.id = numberOfInstantiatedEntities++;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+        this.setEmail(email);
+        this.setPhoneNumber(phoneNumber);
         this.joinDate = new Date();
     }
 
@@ -27,6 +28,9 @@ public abstract class BankingEntity {
     }
 
     public void setEmail(String email) {
+        if (!Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$").matcher(email).matches())
+            System.out.println("Invalid email.");
+
         this.email = email;
     }
 
@@ -35,6 +39,9 @@ public abstract class BankingEntity {
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        if (!Pattern.compile("^\\+\\d{1,3}[- .]?\\d{7,15}").matcher(phoneNumber).matches())
+            System.out.println("Invalid phone number.");
+
         this.phoneNumber = phoneNumber;
     }
 

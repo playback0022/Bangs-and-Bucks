@@ -4,19 +4,25 @@ import java.util.Date;
 
 public final class Company extends BankingEntity {
     private String name;
-    private String registerNumber;
 
-    Company(String email, String phoneNumber, String address, String name, String registerNumber) {
-        super(email, phoneNumber, address);
+    Company(String email, String phoneNumber, String name) {
+        super(email, phoneNumber);
 
-        this.name = name;
-        this.registerNumber = registerNumber;
+        this.setName(name);
     }
 
     @Override
     public String toString() {
         return "Banking entity ID: " + this.getId() + "\nCompany name: " + this.name + "\nRegister number: " +
-                this.registerNumber + "\nJoin date: " + this.getJoinDate() + "\nContact:" + "\n\t- e-mail: " +
-                this.getEmail() + "\n\t- phone number: " + this.getPhoneNumber() + "\n\t- address: ";
+                "\nJoin date: " + this.getJoinDate() + "\nContact:" + "\n\t- e-mail: " + this.getEmail() +
+                "\n\t- phone number: " + this.getPhoneNumber() + "\n\t- address: ";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
