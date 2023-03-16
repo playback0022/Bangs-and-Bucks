@@ -1,4 +1,4 @@
-package Currency;
+package BankingProducts;
 
 import java.util.Objects;
 import java.util.regex.*;

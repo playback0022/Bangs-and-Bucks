@@ -1,7 +1,5 @@
 package BankingEntities;
 
-import java.util.Date;
-
 public final class Company extends BankingEntity {
     private String name;
 
