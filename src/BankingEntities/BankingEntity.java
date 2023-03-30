@@ -13,7 +13,7 @@ public abstract class BankingEntity {
         this.joinDate = LocalDate.now();
     }
 
-    public abstract String toString();
+    public abstract String getIdentity();
 
     public String getEmail() {
         return email;

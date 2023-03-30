@@ -1,48 +1,39 @@
 package BankingProducts;
 
 import BankingEntities.BankingEntity;
-import BankingProducts.Transaction;
 
 import java.util.regex.Pattern;
 
 public class Account {
-    BankingEntity holder;
-    String IBAN;
-    Currency currency;
-    Double balance=0d;
+    private final BankingEntity holder;
+    private final String IBAN;
+    protected final Currency currency;
+    protected Double balance=0d;
 
     Account(BankingEntity holder, String IBAN, Currency currency) {
         this.holder = holder;
-        this.setIBAN(IBAN);
+        this.IBAN = IBAN;
         this.currency = currency;
     }
 
     Account(BankingEntity holder, String IBAN, Currency currency, Double startingBalance) {
         this.holder = holder;
-        this.setIBAN(IBAN);
+        this.IBAN = IBAN;
         this.currency = currency;
         this.depositSum(startingBalance);
+    }
+
+    @Override
+    public String toString() {
+        return  "Holder: " + holder.getIdentity() + "\nIBAN: " + IBAN + "\nBalance: " + balance + currency.getIsoCode();
     }
 
     public BankingEntity getHolder() {
         return holder;
     }
 
-    public void setHolder(BankingEntity holder) {
-        this.holder = holder;
-    }
-
     public String getIBAN() {
         return IBAN;
-    }
-
-    public void setIBAN(String IBAN) {
-        if (!Pattern.compile("^RO[0-9]{2}[A-Z]{4}[A-Z0-9]{16}").matcher(IBAN).matches()) {
-            System.out.println("Invalid IBAN.");
-            return;
-        }
-
-        this.IBAN = IBAN;
     }
 
     public Currency getCurrency() {
@@ -71,13 +62,13 @@ public class Account {
         balance -= sum;
     }
 
-//    public Transaction transferSum(Double sum, Account receivingAccount) {
-//        if (sum <= 0 || sum > balance)
-//            System.out.println("Invalid sum of money to withdraw.");
-//
-//        balance -= sum;
-//        receivingAccount.balance += sum;
-//
-////        return new BankTransfer(this, receivingAccount, );
-//    }
+    public Transaction transferSum(Double sum, Account receivingAccount, String description) {
+        if (sum <= 0 || sum > balance)
+            System.out.println("Invalid sum of money to withdraw.");
+
+        balance -= sum;
+        receivingAccount.balance += sum * currency.getDollarConversionFactor() / receivingAccount.currency.getDollarConversionFactor();
+
+        return new Transaction(this, receivingAccount, sum, description, null);
+    }
 }

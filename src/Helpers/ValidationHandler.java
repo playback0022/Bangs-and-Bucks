@@ -41,7 +41,7 @@ public class ValidationHandler {
     public static LocalDate dateValidator(String promptMessage, String errorMessage, int numberOfYearsInThePast) {
         String inputString;
         Scanner scanner = new Scanner(System.in);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         System.out.print(promptMessage);
         inputString = scanner.next();

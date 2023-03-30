@@ -16,6 +16,11 @@ public final class Individual extends BankingEntity {
     }
 
     @Override
+    public String getIdentity() {
+        return firstName + " " + lastName;
+    }
+
+    @Override
     public String toString() {
         return  "First name: " + this.firstName + "\nLast name: " +
                 this.lastName + "\nBirth date: " + this.birthDate +

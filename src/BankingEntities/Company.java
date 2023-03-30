@@ -10,6 +10,11 @@ public final class Company extends BankingEntity {
     }
 
     @Override
+    public String getIdentity() {
+        return name;
+    }
+
+    @Override
     public String toString() {
         return "Company name: " + this.name + "\nJoin date: " + this.getJoinDate()
                 + "\nContact:" + "\n\t- e-mail: " + this.getEmail() +
