@@ -1,4 +1,4 @@
-package BankingEntities;
+package BankingProducts;
 
 import BankingProducts.Account;
 
@@ -11,3 +11,5 @@ public class Card {
     private String CVV;
     
 }
+
+

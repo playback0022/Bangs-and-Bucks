@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.regex.*;
 
 public class Currency {
-    private final int id;
     private final String state;
     private final String fullName;
     private final String isoCode;
@@ -13,7 +12,6 @@ public class Currency {
     private static Currency[] currencies = new Currency[100];
 
     private Currency(String state, String fullName, String isoCode, Double dollarConversionFactor) {
-        id = numberOfCurrencies++;
         this.state = state;
         this.fullName = fullName;
         this.isoCode = isoCode;
@@ -37,38 +35,35 @@ public class Currency {
         if (dollarConversionFactor <= 0)
             System.out.println("The dollar conversion factor must be strictly positive.");
 
-        currencies[numberOfCurrencies] = new Currency(state, fullName, isoCode, dollarConversionFactor);
+        currencies[numberOfCurrencies++] = new Currency(state, fullName, isoCode, dollarConversionFactor);
 
         return currencies[numberOfCurrencies-1];
     }
 
-    public static void removeCurrency(int id) {
-        if (id < 0 || id >= numberOfCurrencies)
-            System.out.println("Index out of bounds.");
-
-        for (int i=0; i<numberOfCurrencies; i++)
-            if (currencies[i].id == id)
-                System.out.println("deleted.");
-    }
-
-    public static Currency getCurrency(int id) {
-        if (id < 0 || id >= numberOfCurrencies)
-            System.out.println("Index out of bounds.");
-
-        for (int i=0; i<numberOfCurrencies; i++)
-            if (currencies[i].id == id)
-                return currencies[i];
-
-        return null;
-    }
+//    public static void removeCurrency(int id) {
+//        if (id < 0 || id >= numberOfCurrencies)
+//            System.out.println("Index out of bounds.");
+//
+//        for (int i=0; i<numberOfCurrencies; i++)
+//            if (currencies[i].id == id)
+//                System.out.println("deleted.");
+//    }
+//
+//    public static Currency getCurrency(int id) {
+//        if (id < 0 || id >= numberOfCurrencies)
+//            System.out.println("Index out of bounds.");
+//
+//        for (int i=0; i<numberOfCurrencies; i++)
+//            if (currencies[i].id == id)
+//                return currencies[i];
+//
+//        return null;
+//    }
 
     public static Currency[] getAllCurrencies() {
         return currencies;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public String getState() {
         return state;

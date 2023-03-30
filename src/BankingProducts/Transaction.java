@@ -1,6 +1,4 @@
-package BankingEntities;
-
-import BankingProducts.Account;
+package BankingProducts;
 
 public class Transaction {
     private Account sourceAccount;

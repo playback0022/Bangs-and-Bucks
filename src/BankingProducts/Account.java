@@ -1,6 +1,7 @@
 package BankingProducts;
 
 import BankingEntities.BankingEntity;
+import BankingProducts.Transaction;
 
 import java.util.regex.Pattern;
 
@@ -36,8 +37,10 @@ public class Account {
     }
 
     public void setIBAN(String IBAN) {
-        if (!Pattern.compile("^RO[0-9]{2}[A-Z]{4}[A-Z0-9]{16}").matcher(IBAN).matches())
+        if (!Pattern.compile("^RO[0-9]{2}[A-Z]{4}[A-Z0-9]{16}").matcher(IBAN).matches()) {
             System.out.println("Invalid IBAN.");
+            return;
+        }
 
         this.IBAN = IBAN;
     }
@@ -51,26 +54,30 @@ public class Account {
     }
 
     public void depositSum(Double sum) {
-        if (sum <= 0)
+        if (sum <= 0) {
             System.out.println("Invalid sum of money to deposit.");
+            return;
+        }
 
         balance += sum;
     }
 
     public void withdrawSum(Double sum) {
-        if (sum <=0 || sum > balance)
+        if (sum <= 0 || sum > balance) {
             System.out.println("Invalid sum of money to withdraw.");
+            return;
+        }
 
         balance -= sum;
     }
 
-    public Transaction transferSum(Double sum, Account receivingAccount) {
-        if (sum <= 0 || sum > balance)
-            System.out.println("Invalid sum of money to withdraw.");
-
-        balance -= sum;
-        receivingAccount.balance += sum;
-
-        return new BankTransfer(this, receivingAccount, );
-    }
+//    public Transaction transferSum(Double sum, Account receivingAccount) {
+//        if (sum <= 0 || sum > balance)
+//            System.out.println("Invalid sum of money to withdraw.");
+//
+//        balance -= sum;
+//        receivingAccount.balance += sum;
+//
+////        return new BankTransfer(this, receivingAccount, );
+//    }
 }
