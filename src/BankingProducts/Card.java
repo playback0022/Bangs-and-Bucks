@@ -1,18 +1,15 @@
 package BankingProducts;
 
-import BankingEntities.Company;
-import BankingEntities.Individual;
-import BankingProducts.Account;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Card {
-    private Account account;
-    private String number;
-    private Date expiryDate;
-    private String CVV;
+    private final Account account;
+    private final String number;
+    private final LocalDate expiryDate;
+    private final String CVV;
 
-    public Card(Account account, String number, Date expiryDate, String CVV) {
+    public Card(Account account, String number, LocalDate expiryDate, String CVV) {
         this.account = account;
         this.number = number;
         this.expiryDate = expiryDate;
@@ -32,7 +29,7 @@ public class Card {
         return number;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
@@ -41,31 +38,11 @@ public class Card {
     }
 
     public void depositSum(Double sum) {
-        if (sum <= 0) {
-            System.out.println("Invalid sum of money to deposit.");
-            return;
-        }
-
         account.balance += sum;
     }
 
     public void withdrawSum(Double sum) {
-//        if (sum <= 0 || sum > balance) {
-//            System.out.println("Invalid sum of money to withdraw.");
-//            return;
-//        }
-
         account.balance -= sum;
-    }
-
-    public Transaction transferSum(Double sum, Account receivingAccount, String description) {
-//        if (sum <= 0 || sum > balance)
-//            System.out.println("Invalid sum of money to withdraw.");
-
-        account.balance -= sum;
-        receivingAccount.balance += sum * account.currency.getDollarConversionFactor() / receivingAccount.currency.getDollarConversionFactor();
-
-        return new Transaction(account, receivingAccount, sum, description, this);
     }
 }
 

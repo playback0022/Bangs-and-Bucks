@@ -46,7 +46,7 @@ public class CurrencyService {
         System.out.println(currency);
     }
 
-    public void buildCurrency() {
+    public void registerEntity() {
         String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the currency: ", "Invalid ISO code!", "[A-Z]{3}");
         Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", 0d, null);
 
@@ -60,7 +60,7 @@ public class CurrencyService {
         System.out.println("Currency built successfully!");
     }
 
-    public void removeCurrency() {
+    public void unregisterEntity() {
         Currency currency = getCurrency();
 
         if (currency == null)

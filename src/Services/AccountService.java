@@ -14,7 +14,7 @@ public class AccountService extends AbstractService {
     private static AccountService service = null;
 
     private AccountService() {
-        accounts = new ArrayList<>();
+        accounts = new ArrayList<Account>();
     }
 
     public static AccountService getService() {
@@ -25,7 +25,7 @@ public class AccountService extends AbstractService {
     }
 
     public Account getAccount() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", 0, accounts.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", 0, accounts.size());
 
         return accounts.get(id);
     }
@@ -82,9 +82,9 @@ public class AccountService extends AbstractService {
     }
 
     public void unregisterEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", 0, accounts.size());
+        Account account = getAccount();
 
-        accounts.remove(id);
+        accounts.remove(account);
         System.out.println("Account unregistered successfully!");
     }
 
@@ -112,7 +112,8 @@ public class AccountService extends AbstractService {
 
         sourceAccount.withdrawSum(sum);
         destinationAccount.depositSum(sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
-        
+
+        // this will be passed to the registration method of the TransactionService class
         Transaction resultingTransaction = new Transaction(sourceAccount, destinationAccount, sum, description, null);
     }
 }
