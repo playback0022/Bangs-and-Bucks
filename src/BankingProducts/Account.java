@@ -10,7 +10,7 @@ public class Account {
     protected final Currency currency;
     protected Double balance=0d;
 
-    Account(BankingEntity holder, Currency currency) {
+    public Account(BankingEntity holder, Currency currency) {
         Random randomIBANGenerator = new Random();
         int securityCode = randomIBANGenerator.nextInt(100);
         int accountNumberFirstSection = randomIBANGenerator.nextInt(10000000);
@@ -19,18 +19,6 @@ public class Account {
         this.holder = holder;
         this.IBAN = "RO" + String.format("%02d", securityCode) + "BNGS" + String.format("%08d", accountNumberFirstSection) + String.format("%08d", accountNumberSecondSection);
         this.currency = currency;
-    }
-
-    Account(BankingEntity holder, Currency currency, Double startingBalance) {
-        Random randomIBANGenerator = new Random();
-        int securityCode = randomIBANGenerator.nextInt(100);
-        int accountNumberFirstSection = randomIBANGenerator.nextInt(10000000);
-        int accountNumberSecondSection = randomIBANGenerator.nextInt(10000000);
-
-        this.holder = holder;
-        this.IBAN = "RO" + String.format("%02d", securityCode) + "BNGS" + String.format("%08d", accountNumberFirstSection) + String.format("%08d", accountNumberSecondSection);
-        this.currency = currency;
-        this.depositSum(startingBalance);
     }
 
     @Override

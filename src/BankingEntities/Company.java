@@ -3,7 +3,7 @@ package BankingEntities;
 public final class Company extends BankingEntity {
     private String name;
 
-    Company(String email, String phoneNumber, String name) {
+    public Company(String email, String phoneNumber, String name) {
         super(email, phoneNumber);
 
         this.setName(name);

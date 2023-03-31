@@ -6,8 +6,8 @@ import BankingEntities.BankingEntity;
 public class SavingsAccount extends Account {
     private Double interestRate;
 
-    public SavingsAccount(BankingEntity holder, String IBAN, Currency currency, Double interestRate) {
-        super(holder,IBAN,currency);
+    public SavingsAccount(BankingEntity holder, Currency currency, Double interestRate) {
+        super(holder,currency);
 
         this.interestRate = interestRate;
     }

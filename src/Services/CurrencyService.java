@@ -1,5 +1,6 @@
-package BankingProducts;
+package Services;
 
+import BankingProducts.Currency;
 import Helpers.ValidationHandler;
 
 import java.util.HashSet;

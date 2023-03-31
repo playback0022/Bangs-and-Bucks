@@ -7,7 +7,7 @@ public final class Individual extends BankingEntity {
     private String lastName;
     private LocalDate birthDate;
 
-    Individual(String email, String phoneNumber, String firstName, String lastName, LocalDate birthDate) {
+    public Individual(String email, String phoneNumber, String firstName, String lastName, LocalDate birthDate) {
         super(email, phoneNumber);
 
         this.setFirstName(firstName);
