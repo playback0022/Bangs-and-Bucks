@@ -1,61 +1,70 @@
-package BankingEntities;
+package BankingProducts;
 
+import BankingEntities.BankingEntity;
+import BankingEntities.BankingEntityService;
+import BankingEntities.Company;
+import BankingEntities.Individual;
 import Helpers.ValidationHandler;
 
 import java.time.LocalDate;
+import java.util.Currency;
 import java.util.Set;
 
-public class BankingEntityService {
-    private final BankingEntity[] entities;
-    private int numberOfBankingEntities = 0;
-    private static BankingEntityService service = null;
+public class AccountService {
+    private final Account[] accounts;
+    private int numberOfAccounts = 0;
+    private final Card[] cards;
+    private int numberOfCards = 0;
+    private final Deposit[] deposits;
+    private int numberOfDeposits = 0;
+    private final Transaction[] transactions;
+    private int numberOfTransactions = 0;
+    private static AccountService service = null;
 
-    private BankingEntityService() {
-        entities = new BankingEntity[200];
+    private AccountService() {
+        accounts = new Account[200];
+        cards = new Card[600];
+        deposits = new Deposit[200];
+        transactions = new Transaction[2000];
     }
 
-    public static BankingEntityService getService() {
+    public static AccountService getService() {
         if (service == null)
-            service = new BankingEntityService();
+            service = new AccountService();
 
         return service;
     }
 
-    // used by BankingProductService to query banking entities
-    public BankingEntity getBankingEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", 0, numberOfBankingEntities);
+    private
 
-        return entities[id];
+    public void printAllAccounts() {
+        for (int i = 0; i < numberOfAccounts; i++)
+            System.out.println("\nAccount id: " + i + "\n" + accounts[i]);
     }
 
-    public void printAllEntities() {
-        for (int i = 0; i < numberOfBankingEntities; i++)
-            System.out.println("\nBanking entity id: " + i + "\n" + entities[i]);
+    public void printAllPlainAccounts() {
+        for (int i = 0; i < numberOfAccounts; i++)
+            if (!(accounts[i] instanceof SavingsAccount))
+                System.out.println("\nAccount id: " + i + "\n" + accounts[i]);
     }
 
-    public void printAllIndividuals() {
-        for (int i = 0; i < numberOfBankingEntities; i++)
-            if (entities[i] instanceof Individual)
-                System.out.println("\nBanking entity id: " + i + "\n" + entities[i]);
+    public void printAllSavingsAccounts() {
+        for (int i = 0; i < numberOfAccounts; i++)
+            if (accounts[i] instanceof SavingsAccount)
+                System.out.println("\nAccount id: " + i + "\n" + accounts[i]);
     }
 
-    public void printAllCompanies() {
-        for (int i = 0; i < numberOfBankingEntities; i++)
-            if (entities[i] instanceof Company)
-                System.out.println("\nBanking entity id: " + i + "\n" + entities[i]);
+    public void printAccount() {
+        int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", 0, numberOfAccounts);
+
+        System.out.println("\nAccount id: " + id + "\n" + accounts[id]);
     }
 
-    public void printEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", 0, numberOfBankingEntities);
+    private void openAccount() {
+        int choice = ValidationHandler.intValidator("Do you wish to open a simple account(0) or a savings account(1)? ", "Invalid choice!", 0, 1);
 
-        System.out.println("\nBanking entity id: " + id + "\n" + entities[id]);
-    }
-
-    public void registerEntity() {
-        int choice = ValidationHandler.intValidator("Is the entity an individual(0) or a company(1)? ", "Invalid choice!", 0, 1);
-
-        String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
-        String phoneNumber = ValidationHandler.stringValidator("Enter the phone number of the entity: ", "Invalid phone number!", "^\\+\\d{1,3}[- .]?\\d{7,15}");
+        BankingEntity holder = BankingEntityService.getService().getBankingEntity();
+        Currency currency = Currency.getInstance();
 
         BankingEntity newEntity = null;
         switch (choice) {
@@ -79,7 +88,7 @@ public class BankingEntityService {
         System.out.println("Entity created successfully!");
     }
 
-    public void updateEntity() {
+    private void updateEntity() {
         int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", 0, numberOfBankingEntities);
 
         System.out.println("Multiple fields can be updated at once, by specifying them on the same line.");
@@ -120,9 +129,7 @@ public class BankingEntityService {
                 }
             }
 
-        }
-
-        else {
+        } else {
             System.out.println("\t3.Name");
 
             Set<Integer> companyChoices = ValidationHandler.choicesValidator(1, 3);
@@ -149,7 +156,7 @@ public class BankingEntityService {
         System.out.println("Entity updated successfully!");
     }
 
-    public void unregisterEntity() {
+    private void unregisterEntity() {
         int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", 0, numberOfBankingEntities);
 
         for (int i = id; i < numberOfBankingEntities - 1; i++)

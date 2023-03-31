@@ -23,6 +23,21 @@ public class ValidationHandler {
         return requestedValue;
     }
 
+    public static Double doubleValidator(String promptMessage, String errorMessage, Integer lowerBound, Integer upperBound) {
+        Double requestedValue;
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print(promptMessage);
+        requestedValue = scanner.nextDouble();
+        while ((lowerBound != null && requestedValue < lowerBound) || (upperBound != null && requestedValue > upperBound)) {
+            System.out.println("Error: " + errorMessage);
+            System.out.print(promptMessage);
+            requestedValue = scanner.nextDouble();
+        }
+
+        return requestedValue;
+    }
+
     public static String stringValidator(String promptMessage, String errorMessage, String regex) {
         String inputString;
         Scanner scanner = new Scanner(System.in);
