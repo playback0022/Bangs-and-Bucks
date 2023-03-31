@@ -43,30 +43,10 @@ public class Account {
     }
 
     public void depositSum(Double sum) {
-        if (sum <= 0) {
-            System.out.println("Invalid sum of money to deposit.");
-            return;
-        }
-
         balance += sum;
     }
 
     public void withdrawSum(Double sum) {
-        if (sum <= 0 || sum > balance) {
-            System.out.println("Invalid sum of money to withdraw.");
-            return;
-        }
-
         balance -= sum;
-    }
-
-    public Transaction transferSum(Double sum, Account receivingAccount, String description) {
-        if (sum <= 0 || sum > balance)
-            System.out.println("Invalid sum of money to withdraw.");
-
-        balance -= sum;
-        receivingAccount.balance += sum * currency.getDollarConversionFactor() / receivingAccount.currency.getDollarConversionFactor();
-
-        return new Transaction(this, receivingAccount, sum, description, null);
     }
 }

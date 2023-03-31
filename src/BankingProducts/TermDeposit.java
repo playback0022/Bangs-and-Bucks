@@ -4,7 +4,7 @@ import BankingEntities.BankingEntity;
 
 import java.time.LocalDate;
 
-public class Deposit {
+public class TermDeposit {
     private final BankingEntity owner;
     private Double amount;
     private final Currency currency;
@@ -13,7 +13,7 @@ public class Deposit {
     private final Double interestRate;
     private Boolean emptied = false;
 
-    public Deposit(BankingEntity owner, Double amount, Currency currency, Integer durationInMonths, Double interestRate) {
+    public TermDeposit(BankingEntity owner, Double amount, Currency currency, Integer durationInMonths, Double interestRate) {
         this.owner = owner;
         this.amount = amount;
         this.currency = currency;

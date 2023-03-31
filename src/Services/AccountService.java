@@ -3,10 +3,10 @@ package Services;
 import BankingProducts.Account;
 import BankingProducts.SavingsAccount;
 import BankingProducts.Currency;
+import BankingProducts.Transaction;
 import BankingEntities.BankingEntity;
 import Helpers.ValidationHandler;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AccountService extends AbstractService {
@@ -71,7 +71,7 @@ public class AccountService extends AbstractService {
                 break;
 
             case 1:
-                Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the savings account: ", "Invalid interest rate!", 0, 100);
+                Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the savings account: ", "Invalid interest rate!", 0d, 100d);
 
                 account = new SavingsAccount(holder, currency, interestRate / 100);
                 break;
@@ -86,5 +86,33 @@ public class AccountService extends AbstractService {
 
         accounts.remove(id);
         System.out.println("Account unregistered successfully!");
+    }
+
+    public void makeDeposit() {
+        Account account = getAccount();
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", 0d, null);
+
+        account.depositSum(sum);
+        System.out.println("Deposit successfully processed!");
+    }
+    
+    public void performWithdraw() {
+        Account account = getAccount();
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", 0d, account.getBalance());
+
+        account.withdrawSum(sum);
+        System.out.println("Amount successfully withdrawn!");
+    }
+    
+    public void performTransfer() {
+        Account sourceAccount = getAccount();
+        Account destinationAccount = getAccount();
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", 0d, sourceAccount.getBalance());
+        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", ".+");
+
+        sourceAccount.withdrawSum(sum);
+        destinationAccount.depositSum(sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
+        
+        Transaction resultingTransaction = new Transaction(sourceAccount, destinationAccount, sum, description, null);
     }
 }

@@ -48,7 +48,7 @@ public class CurrencyService {
 
     public void buildCurrency() {
         String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the currency: ", "Invalid ISO code!", "[A-Z]{3}");
-        Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", 0, null);
+        Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", 0d, null);
 
         for (Currency currency : currencies)
             if (currency!=null && (currency.getIsoCode().equals(isoCode))) {

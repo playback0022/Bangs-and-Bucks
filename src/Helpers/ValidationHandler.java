@@ -23,7 +23,7 @@ public class ValidationHandler {
         return requestedValue;
     }
 
-    public static Double doubleValidator(String promptMessage, String errorMessage, Integer lowerBound, Integer upperBound) {
+    public static Double doubleValidator(String promptMessage, String errorMessage, Double lowerBound, Double upperBound) {
         Double requestedValue;
         Scanner scanner = new Scanner(System.in);
 
