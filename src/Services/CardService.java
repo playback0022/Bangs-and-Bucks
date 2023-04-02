@@ -73,7 +73,7 @@ public class CardService extends AbstractService {
         System.out.println("Card unregistered successfully!");
     }
 
-    protected void makeDeposit() {
+    private void makeDeposit() {
         Card card = getCard("Cards");
 
         if (card == null)
@@ -85,7 +85,7 @@ public class CardService extends AbstractService {
         System.out.println("Deposit successfully processed!");
     }
 
-    protected void performWithdraw() {
+    private void performWithdraw() {
         Card card = getCard("Cards");
 
         if (card == null)
@@ -97,7 +97,7 @@ public class CardService extends AbstractService {
         System.out.println("Amount successfully withdrawn!");
     }
 
-    protected void performTransfer() {
+    private void performTransfer() {
         Card card = getCard("Cards");
 
         if (card == null)
@@ -131,9 +131,9 @@ public class CardService extends AbstractService {
             return;
         }
 
-        System.out.println("2. Unregister term deposit");
-        System.out.println("3. List all term deposits");
-        System.out.println("4. List term deposit by id");
+        System.out.println("2. Unregister card");
+        System.out.println("3. List all cards");
+        System.out.println("4. List card by id");
         System.out.println("5. Make deposit");
         System.out.println("6. Perform withdraw");
         System.out.println("7. Perform transfer");

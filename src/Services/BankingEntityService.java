@@ -7,6 +7,7 @@ import Helpers.ValidationHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BankingEntityService extends AbstractService {
@@ -30,28 +31,30 @@ public class BankingEntityService extends AbstractService {
             return null;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 0, entities.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 0, entities.size() - 1);
         return entities.get(id);
     }
 
-    public void printAllEntities() {
+    @Override
+    protected void printAllEntities() {
         for (int i = 0; i < entities.size(); i++)
             System.out.println("\nBanking entity id: " + i + "\n" + entities.get(i));
     }
 
-    public void printAllIndividuals() {
+    private void printAllIndividuals() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Individual)
                 System.out.println("\nBanking entity id: " + i + "\n" + entities.get(i));
     }
 
-    public void printAllCompanies() {
+    private void printAllCompanies() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Company)
                 System.out.println("\nBanking entity id: " + i + "\n" + entities.get(i));
     }
 
-    public void printEntity() {
+    @Override
+    protected void printEntity() {
         if (entities.isEmpty()) {
             System.out.println(">>> No banking entities registered so far.");
             return;
@@ -62,7 +65,8 @@ public class BankingEntityService extends AbstractService {
         System.out.println("\nBanking entity id: " + id + "\n" + entities.get(id));
     }
 
-    public void registerEntity() {
+    @Override
+    protected void registerEntity() {
         int choice = ValidationHandler.intValidator("Is the entity an individual(0) or a company(1)? ", "Invalid choice!", "Banking Entities", 0, 1);
 
         String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "Banking Entities", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
@@ -89,8 +93,11 @@ public class BankingEntityService extends AbstractService {
         System.out.println("Entity registered successfully!");
     }
 
-    public void updateEntity() {
+    private void updateEntity() {
         BankingEntity entity = getBankingEntity("Banking Entities");
+
+        if (entity == null)
+            return;
 
         System.out.println("Multiple fields can be updated at once, by specifying them on the same line.");
         System.out.println("Editable fields:");
@@ -159,10 +166,46 @@ public class BankingEntityService extends AbstractService {
         System.out.println("Entity updated successfully!");
     }
 
-    public void unregisterEntity() {
+    @Override
+    protected void unregisterEntity() {
         BankingEntity entity = getBankingEntity("Banking Entities");
+
+        if (entity == null)
+            return;
 
         entities.remove(entity);
         System.out.println("Entity unregistered successfully!");
+    }
+
+    @Override
+    public void initService() {
+        System.out.println(">>> Banking Entity Menu Initiated");
+        System.out.println("1. Register banking entity");
+
+        if (entities.isEmpty()) {
+            HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Entities", 1, 1);
+            if (!choices.isEmpty())
+                registerEntity();
+            return;
+        }
+
+        System.out.println("2. Update entity");
+        System.out.println("3. Unregister entity");
+        System.out.println("4. List all banking entities");
+        System.out.println("5. List all individuals");
+        System.out.println("6. List all companies");
+        System.out.println("7. List banking entity by id");
+
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 7);
+        for (Integer choice : choices)
+            switch (choice) {
+                case 1 -> registerEntity();
+                case 2 -> updateEntity();
+                case 3 -> unregisterEntity();
+                case 4 -> printAllEntities();
+                case 5 -> printAllIndividuals();
+                case 6 -> printAllCompanies();
+                case 7 -> printEntity();
+            }
     }
 }
