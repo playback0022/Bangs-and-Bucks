@@ -24,8 +24,8 @@ public class CardService extends AbstractService {
         return service;
     }
 
-    public Card getCard() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", 0, cards.size());
+    public Card getCard(String shellIndicator) {
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", shellIndicator, 0, cards.size());
         return cards.get(id);
     }
 
@@ -35,12 +35,12 @@ public class CardService extends AbstractService {
     }
 
     public void printEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", 0, cards.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size());
         System.out.println("\nAccount id: " + id + "\n" + cards.get(id));
     }
 
     public void registerEntity() {
-        Account account = AccountService.getService().getAccount();
+        Account account = AccountService.getService().getAccount("Cards");
 
         Random generator = new Random();
 
@@ -53,38 +53,39 @@ public class CardService extends AbstractService {
     }
 
     public void unregisterEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", 0, cards.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size());
 
         cards.remove(id);
         System.out.println("Card unregistered successfully!");
     }
 
     public void makeDeposit() {
-        Card card = getCard();
-        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", 0d, null);
+        Card card = getCard("Cards");
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", "Cards", 0d, null);
 
         card.depositSum(sum);
         System.out.println("Deposit successfully processed!");
     }
 
     public void performWithdraw() {
-        Card card = getCard();
-        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", 0d, card.getAccount().getBalance());
+        Card card = getCard("Cards");
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
 
         card.withdrawSum(sum);
         System.out.println("Amount successfully withdrawn!");
     }
 
     public void performTransfer() {
-        Card card = getCard();
-        Account destinationAccount = AccountService.getService().getAccount();
-        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", 0d, card.getAccount().getBalance());
-        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", ".+");
+        Card card = getCard("Cards");
+        Account destinationAccount = AccountService.getService().getAccount("Cards");
+        Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
+        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!",  "Cards",".+");
 
         card.withdrawSum(sum);
         destinationAccount.depositSum(sum * card.getAccount().getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
 
         // this will be passed to the registration method of the TransactionService class
         Transaction resultingTransaction = new Transaction(card.getAccount(), destinationAccount, sum, description, card);
+        TransactionService.getService().registerEntity(resultingTransaction);
     }
 }

@@ -21,8 +21,8 @@ public class CurrencyService {
         return service;
     }
 
-    public Currency getCurrency() {
-        String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the desired currency: ", "Invalid ISO code!", "[A-Z]{3}");
+    public Currency getCurrency(String shellIndicator) {
+        String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the desired currency: ", "Invalid ISO code!", shellIndicator, "[A-Z]{3}");
 
         for (Currency currency : currencies)
             if (currency.getIsoCode().equals(isoCode))
@@ -38,7 +38,7 @@ public class CurrencyService {
     }
 
     public void printCurrency() {
-        Currency currency = getCurrency();
+        Currency currency = getCurrency("Currencies");
 
         if (currency == null)
             return;
@@ -47,8 +47,8 @@ public class CurrencyService {
     }
 
     public void registerEntity() {
-        String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the currency: ", "Invalid ISO code!", "[A-Z]{3}");
-        Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", 0d, null);
+        String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the currency: ", "Invalid ISO code!", "Currencies", "[A-Z]{3}");
+        Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", "Currencies", 0d, null);
 
         for (Currency currency : currencies)
             if (currency!=null && (currency.getIsoCode().equals(isoCode))) {
@@ -61,7 +61,7 @@ public class CurrencyService {
     }
 
     public void unregisterEntity() {
-        Currency currency = getCurrency();
+        Currency currency = getCurrency("Currencies");
 
         if (currency == null)
             return;

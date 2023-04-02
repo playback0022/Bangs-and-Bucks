@@ -8,14 +8,18 @@ import java.util.regex.Pattern;
 public class ValidationHandler {
     private ValidationHandler() {}
 
-    public static int intValidator(String promptMessage, String errorMessage, Integer lowerBound, Integer upperBound) {
+    public static int intValidator(String promptMessage, String errorMessage, String shellIndicator, Integer lowerBound, Integer upperBound) {
         int requestedValue;
         Scanner scanner = new Scanner(System.in);
 
+        if (shellIndicator != null)
+            System.out.print(shellIndicator + "> ");
         System.out.print(promptMessage);
         requestedValue = scanner.nextInt();
         while ((lowerBound != null && requestedValue < lowerBound) || (upperBound != null && requestedValue > upperBound)) {
             System.out.println("Error: " + errorMessage);
+            if (shellIndicator != null)
+                System.out.print(shellIndicator + "> ");
             System.out.print(promptMessage);
             requestedValue = scanner.nextInt();
         }
@@ -23,14 +27,18 @@ public class ValidationHandler {
         return requestedValue;
     }
 
-    public static Double doubleValidator(String promptMessage, String errorMessage, Double lowerBound, Double upperBound) {
+    public static Double doubleValidator(String promptMessage, String errorMessage, String shellIndicator, Double lowerBound, Double upperBound) {
         Double requestedValue;
         Scanner scanner = new Scanner(System.in);
 
+        if (shellIndicator != null)
+            System.out.print(shellIndicator + "> ");
         System.out.print(promptMessage);
         requestedValue = scanner.nextDouble();
         while ((lowerBound != null && requestedValue < lowerBound) || (upperBound != null && requestedValue > upperBound)) {
             System.out.println("Error: " + errorMessage);
+            if (shellIndicator != null)
+                System.out.print(shellIndicator + "> ");
             System.out.print(promptMessage);
             requestedValue = scanner.nextDouble();
         }
@@ -38,14 +46,18 @@ public class ValidationHandler {
         return requestedValue;
     }
 
-    public static String stringValidator(String promptMessage, String errorMessage, String regex) {
+    public static String stringValidator(String promptMessage, String errorMessage, String shellIndicator, String regex) {
         String inputString;
         Scanner scanner = new Scanner(System.in);
 
+        if (shellIndicator != null)
+            System.out.print(shellIndicator + "> ");
         System.out.print(promptMessage);
         inputString = scanner.next();
         while (!Pattern.compile(regex).matcher(inputString).matches()) {
             System.out.println("Error: " + errorMessage);
+            if (shellIndicator != null)
+                System.out.print(shellIndicator + "> ");
             System.out.print(promptMessage);
             inputString = scanner.next();
         }
@@ -53,17 +65,21 @@ public class ValidationHandler {
         return inputString;
     }
 
-    public static LocalDate dateValidator(String promptMessage, String errorMessage, int numberOfYearsInThePast) {
+    public static LocalDate dateValidator(String promptMessage, String errorMessage, String shellIndicator, int numberOfYearsInThePast) {
         String inputString;
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        if (shellIndicator != null)
+            System.out.print(shellIndicator + "> ");
         System.out.print(promptMessage);
         inputString = scanner.next();
         // parsing the input string in the format outlined above and
         // comparing it to the current time - 'numberOfYearsInThePast'
         while (LocalDate.parse(inputString, formatter).compareTo(LocalDate.now().minusYears(numberOfYearsInThePast)) > 0) {
             System.out.println("Error: " + errorMessage);
+            if (shellIndicator != null)
+                System.out.print(shellIndicator + "> ");
             System.out.print(promptMessage);
             inputString = scanner.next();
         }
@@ -71,8 +87,12 @@ public class ValidationHandler {
         return LocalDate.parse(inputString, formatter);
     }
 
-    public static Set<Integer> choicesValidator(int lowerBound, int upperBound) {
+    public static Set<Integer> choicesValidator(String shellIndicator, int lowerBound, int upperBound) {
         Scanner scanner = new Scanner(System.in);
+
+        if (shellIndicator != null)
+            System.out.print(shellIndicator + "> ");
+
         System.out.print("Enter the options you wish to select: ");
         String line = scanner.nextLine();
 
@@ -84,7 +104,7 @@ public class ValidationHandler {
             currentChoice = Integer.parseInt(splitChoiceArray[i]);
 
             if (currentChoice < lowerBound || currentChoice > upperBound) {
-                System.out.println("Invalid option ID: '" + currentChoice + "'!");
+                System.out.println("Error: Invalid option ID: '" + currentChoice + "'!");
                 continue;
             }
 
