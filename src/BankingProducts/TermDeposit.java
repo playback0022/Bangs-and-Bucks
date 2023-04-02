@@ -31,17 +31,12 @@ public class TermDeposit {
 
     public void emptyDeposit(Account receivingAccount) {
         if (emptied) {
-            System.out.println("Deposit already emptied!");
+            System.out.println("Error: Deposit already emptied!");
             return;
         }
 
         if (LocalDate.now().isBefore(constitutionDate.plusMonths(durationInMonths))) {
-            System.out.println("The deposit is locked until " + constitutionDate.plusMonths(durationInMonths) + "!");
-            return;
-        }
-
-        if (!receivingAccount.getHolder().equals(owner)) {
-            System.out.println("Invalid account!");
+            System.out.println("Error: The deposit is locked until " + constitutionDate.plusMonths(durationInMonths) + "!");
             return;
         }
 
@@ -49,7 +44,7 @@ public class TermDeposit {
         Double convertedAmount = amount * currency.getDollarConversionFactor() / receivingAccount.getCurrency().getDollarConversionFactor();
         receivingAccount.depositSum(convertedAmount);
         emptied = true;
-        System.out.println();
+        System.out.println("Term Deposit successfully emptied!");
     }
 
     public BankingEntity getOwner() {

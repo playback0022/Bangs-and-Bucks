@@ -4,17 +4,17 @@ import BankingProducts.TermDeposit;
 
 import java.util.ArrayList;
 
-public class TransferService extends AbstractService {
+public class TransactionService extends AbstractService {
     private ArrayList<TermDeposit> transfers;
-    private static TransferService service = null;
+    private static TransactionService service = null;
 
-    private TransferService() {
+    private TransactionService() {
         transfers = new ArrayList<TermDeposit>();
     }
 
-    public static TransferService getService() {
+    public static TransactionService getService() {
         if (service == null)
-            service = new TransferService();
+            service = new TransactionService();
 
         return service;
     }
