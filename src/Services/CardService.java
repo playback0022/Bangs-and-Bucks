@@ -7,6 +7,7 @@ import Helpers.ValidationHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class CardService extends AbstractService {
@@ -30,27 +31,30 @@ public class CardService extends AbstractService {
             return null;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", shellIndicator, 0, cards.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", shellIndicator, 0, cards.size() - 1);
         return cards.get(id);
     }
 
-    public void printAllEntities() {
+    protected void printAllEntities() {
         for (int i = 0; i < cards.size(); i++)
             System.out.println("\nCard id: " + i + "\n" + cards.get(i));
     }
 
-    public void printEntity() {
+    protected void printEntity() {
         if (cards.isEmpty()) {
             System.out.println(">>> No cards registered so far.");
             return;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size());
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size() - 1);
         System.out.println("\nAccount id: " + id + "\n" + cards.get(id));
     }
 
-    public void registerEntity() {
+    protected void registerEntity() {
         Account account = AccountService.getService().getAccount("Cards");
+
+        if (account == null)
+            return;
 
         Random generator = new Random();
 
@@ -62,32 +66,48 @@ public class CardService extends AbstractService {
         System.out.println("Card registered successfully!");
     }
 
-    public void unregisterEntity() {
-        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size());
+    protected void unregisterEntity() {
+        int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size() - 1);
 
         cards.remove(id);
         System.out.println("Card unregistered successfully!");
     }
 
-    public void makeDeposit() {
+    protected void makeDeposit() {
         Card card = getCard("Cards");
+
+        if (card == null)
+            return;
+
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", "Cards", 0d, null);
 
         card.depositSum(sum);
         System.out.println("Deposit successfully processed!");
     }
 
-    public void performWithdraw() {
+    protected void performWithdraw() {
         Card card = getCard("Cards");
+
+        if (card == null)
+            return;
+
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
 
         card.withdrawSum(sum);
         System.out.println("Amount successfully withdrawn!");
     }
 
-    public void performTransfer() {
+    protected void performTransfer() {
         Card card = getCard("Cards");
+
+        if (card == null)
+            return;
+
         Account destinationAccount = AccountService.getService().getAccount("Cards");
+
+        if (destinationAccount == null)
+            return;
+
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
         String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!",  "Cards",".+");
 
@@ -97,5 +117,37 @@ public class CardService extends AbstractService {
         // this will be passed to the registration method of the TransactionService class
         Transaction resultingTransaction = new Transaction(card.getAccount(), destinationAccount, sum, description, card);
         TransactionService.getService().registerEntity(resultingTransaction);
+    }
+
+    @Override
+    public void initService() {
+        System.out.println(">>> Card Menu Initiated");
+        System.out.println("1. Register card");
+
+        if (cards.isEmpty()) {
+            HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Cards", 1, 1);
+            if (!choices.isEmpty())
+                registerEntity();
+            return;
+        }
+
+        System.out.println("2. Unregister term deposit");
+        System.out.println("3. List all term deposits");
+        System.out.println("4. List term deposit by id");
+        System.out.println("5. Make deposit");
+        System.out.println("6. Perform withdraw");
+        System.out.println("7. Perform transfer");
+
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 7);
+        for (Integer choice : choices)
+            switch (choice) {
+                case 1 -> registerEntity();
+                case 2 -> unregisterEntity();
+                case 3 -> printAllEntities();
+                case 4 -> printEntity();
+                case 5 -> makeDeposit();
+                case 6 -> performWithdraw();
+                case 7 -> performTransfer();
+            }
     }
 }
