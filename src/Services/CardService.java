@@ -15,7 +15,7 @@ public class CardService extends AbstractService {
     private static CardService service = null;
 
     private CardService() {
-        cards = new ArrayList<Card>();
+        cards = new ArrayList<>();
     }
 
     public static CardService getService() {
@@ -27,7 +27,7 @@ public class CardService extends AbstractService {
 
     public Card getCard(String shellIndicator) {
         if (cards.isEmpty()) {
-            System.out.println(">>> No cards registered so far.");
+            System.out.println("Warning: No cards registered so far.");
             return null;
         }
 
@@ -36,18 +36,21 @@ public class CardService extends AbstractService {
     }
 
     protected void printAllEntities() {
-        for (int i = 0; i < cards.size(); i++)
-            System.out.println("\nCard id: " + i + "\n" + cards.get(i));
+        for (int i = 0; i < cards.size(); i++) {
+            System.out.println("------------------------------\nCard id: " + i + "\n" + cards.get(i));
+            if (i == cards.size() - 1)
+                System.out.println("------------------------------");
+        }
     }
 
     protected void printEntity() {
         if (cards.isEmpty()) {
-            System.out.println(">>> No cards registered so far.");
+            System.out.println("Warning: No cards registered so far.");
             return;
         }
 
         int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size() - 1);
-        System.out.println("\nAccount id: " + id + "\n" + cards.get(id));
+        System.out.println("------------------------------\nCard id: " + id + "\n" + cards.get(id) + "\n------------------------------");
     }
 
     protected void registerEntity() {
@@ -124,7 +127,7 @@ public class CardService extends AbstractService {
             return;
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
-        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!",  "Cards",".+");
+        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", "Cards", ".+");
 
         card.withdrawSum(sum);
         destinationAccount.depositSum(sum * card.getAccount().getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
@@ -153,7 +156,7 @@ public class CardService extends AbstractService {
         System.out.println("6. Perform withdraw");
         System.out.println("7. Perform transfer");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 7);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Cards", 1, 7);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();

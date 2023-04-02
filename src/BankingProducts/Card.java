@@ -18,7 +18,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return  "Holder: " + account.getHolder().getIdentity() + "\nNumber: " + number + "\nExpiry: " + expiryDate + "\nCVV: " + CVV;
+        return "Holder: " + account.getHolder().getIdentity() + "\nNumber: " + number + "\nExpiry: " + expiryDate + "\nCVV: " + CVV;
     }
 
     public Account getAccount() {

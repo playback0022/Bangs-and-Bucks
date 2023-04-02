@@ -12,7 +12,7 @@ public class TermDepositService extends AbstractService {
     private static TermDepositService service = null;
 
     private TermDepositService() {
-        deposits = new ArrayList<TermDeposit>();
+        deposits = new ArrayList<>();
     }
 
     public static TermDepositService getService() {
@@ -24,28 +24,32 @@ public class TermDepositService extends AbstractService {
 
     public TermDeposit getTermDeposit(String shellIndicator) {
         if (deposits.isEmpty()) {
-            System.out.println(">>> No term deposits registered so far.");
+            System.out.println("Warning: No term deposits registered so far.");
             return null;
         }
 
         int id = ValidationHandler.intValidator("Enter the id of the desired term deposit: ", "Invalid id!", shellIndicator, 0, deposits.size() - 1);
         return deposits.get(id);
     }
+
     @Override
     protected void printAllEntities() {
-        for (int i = 0; i < deposits.size(); i++)
-            System.out.println("\nTerm Deposit id: " + i + "\n" + deposits.get(i));
+        for (int i = 0; i < deposits.size(); i++) {
+            System.out.println("------------------------------\nTerm Deposit id: " + i + "\n" + deposits.get(i));
+            if (i == deposits.size() - 1)
+                System.out.println("------------------------------");
+        }
     }
 
     @Override
     protected void printEntity() {
         if (deposits.isEmpty()) {
-            System.out.println(">>> No term deposits registered so far.");
+            System.out.println("Warning: No term deposits registered so far.");
             return;
         }
 
         int id = ValidationHandler.intValidator("Enter the id of the desired term deposit: ", "Invalid id!", "Term Deposits", 0, deposits.size() - 1);
-        System.out.println("\nTermDeposit id: " + id + "\n" + deposits.get(id));
+        System.out.println("------------------------------\nTerm Deposit id: " + id + "\n" + deposits.get(id));
     }
 
     @Override
@@ -104,7 +108,7 @@ public class TermDepositService extends AbstractService {
         System.out.println("4. List term deposit by id");
         System.out.println("5. Empty deposit");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 5);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Term Deposits", 1, 5);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();

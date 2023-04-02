@@ -28,7 +28,7 @@ public class AccountService extends AbstractService {
 
     public Account getAccount(String shellIndicator) {
         if (accounts.isEmpty()) {
-            System.out.println(">>> No account registered so far.");
+            System.out.println("Warning: No account registered so far.");
             return null;
         }
 
@@ -38,32 +38,35 @@ public class AccountService extends AbstractService {
 
     @Override
     protected void printAllEntities() {
-        for (int i = 0; i < accounts.size(); i++)
-            System.out.println("\nAccount id: " + i + "\n" + accounts.get(i));
+        for (int i = 0; i < accounts.size(); i++) {
+            System.out.println("------------------------------\nAccount id: " + i + "\n" + accounts.get(i));
+            if (i == accounts.size() - 1)
+                System.out.println("------------------------------");
+        }
     }
 
     private void printAllPlainAccounts() {
         for (int i = 0; i < accounts.size(); i++)
             if (!(accounts.get(i) instanceof SavingsAccount))
-                System.out.println("\nAccount id: " + i + "\n" + accounts.get(i));
+                System.out.println("------------------------------\nAccount id: " + i + "\n" + accounts.get(i));
     }
 
     private void printAllSavingsAccounts() {
         for (int i = 0; i < accounts.size(); i++)
             if (accounts.get(i) instanceof SavingsAccount)
-                System.out.println("\nAccount id: " + i + "\n" + accounts.get(i));
+                System.out.println("------------------------------\nAccount id: " + i + "\n" + accounts.get(i));
     }
 
     @Override
     protected void printEntity() {
         if (accounts.isEmpty()) {
-            System.out.println(">>> No account registered so far.");
+            System.out.println("Warning: No account registered so far.");
             return;
         }
 
         int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", "Accounts", 0, accounts.size() - 1);
 
-        System.out.println("\nAccount id: " + id + "\n" + accounts.get(id));
+        System.out.println("------------------------------\nAccount id: " + id + "\n" + accounts.get(id) + "\n------------------------------");
     }
 
     @Override
@@ -119,7 +122,7 @@ public class AccountService extends AbstractService {
         account.depositSum(sum);
         System.out.println("Deposit successfully processed!");
     }
-    
+
     private void performWithdraw() {
         Account account = getAccount("Accounts");
 
@@ -131,7 +134,7 @@ public class AccountService extends AbstractService {
         account.withdrawSum(sum);
         System.out.println("Amount successfully withdrawn!");
     }
-    
+
     private void performTransfer() {
         Account sourceAccount = getAccount("Accounts");
 
@@ -144,7 +147,7 @@ public class AccountService extends AbstractService {
             return;
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Accounts", 0d, sourceAccount.getBalance());
-        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", "Accounts",".+");
+        String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", "Accounts", ".+");
 
         sourceAccount.withdrawSum(sum);
         destinationAccount.depositSum(sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
@@ -196,7 +199,7 @@ public class AccountService extends AbstractService {
         System.out.println("9. Perform transfer");
         System.out.println("10. Update balance (savings accounts)");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 10);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Accounts", 1, 10);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();

@@ -6,7 +6,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class ValidationHandler {
-    private ValidationHandler() {}
+    private ValidationHandler() {
+    }
 
     public static int intValidator(String promptMessage, String errorMessage, String shellIndicator, Integer lowerBound, Integer upperBound) {
         int requestedValue;
@@ -96,14 +97,14 @@ public class ValidationHandler {
         System.out.print("Enter the options you wish to select: ");
         String line = scanner.nextLine();
 
-        String []splitChoiceArray = line.trim().split("\\s+");
+        String[] splitChoiceArray = line.trim().split("\\s+");
         Set<Integer> parsedChoices = new HashSet<Integer>();
 
         Integer currentChoice;
         for (int i = 0; i < splitChoiceArray.length; i++) {
             currentChoice = Integer.parseInt(splitChoiceArray[i]);
 
-            if (currentChoice < lowerBound || currentChoice > upperBound) {
+            if ((currentChoice < lowerBound || currentChoice > upperBound) && currentChoice != -1) {
                 System.out.println("Error: Invalid option ID: '" + currentChoice + "'!");
                 continue;
             }

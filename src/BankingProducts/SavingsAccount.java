@@ -7,7 +7,7 @@ public class SavingsAccount extends Account {
     private final Double interestRate;
 
     public SavingsAccount(BankingEntity holder, Currency currency, Double interestRate) {
-        super(holder,currency);
+        super(holder, currency);
 
         this.interestRate = interestRate;
     }

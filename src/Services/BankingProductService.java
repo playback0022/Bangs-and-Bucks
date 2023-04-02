@@ -5,6 +5,9 @@ import Helpers.ValidationHandler;
 import java.util.HashSet;
 
 public class BankingProductService {
+    private BankingProductService() {
+    }
+
     public static void initService() {
         System.out.println(">>> Banking Product Menu Initiated");
         System.out.println("1. Currencies");
@@ -13,7 +16,7 @@ public class BankingProductService {
         System.out.println("4. Cards");
         System.out.println("5. Transactions");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 5);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Banking Products", 1, 5);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> CurrencyService.getService().initService();

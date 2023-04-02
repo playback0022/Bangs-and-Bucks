@@ -11,7 +11,7 @@ public class CurrencyService extends AbstractService {
     private static CurrencyService service = null;
 
     private CurrencyService() {
-        currencies = new HashSet<Currency>();
+        currencies = new HashSet<>();
     }
 
     public static CurrencyService getService() {
@@ -23,7 +23,7 @@ public class CurrencyService extends AbstractService {
 
     public Currency getCurrency(String shellIndicator) {
         if (currencies.isEmpty()) {
-            System.out.println(">>> No currencies registered so far.");
+            System.out.println("Warning: No currencies registered so far.");
             return null;
         }
 
@@ -39,8 +39,8 @@ public class CurrencyService extends AbstractService {
 
     @Override
     protected void printAllEntities() {
-        for (Currency currency: currencies)
-            System.out.println(currency);
+        for (Currency currency : currencies)
+            System.out.println("------------------------------\n" + currency);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CurrencyService extends AbstractService {
         if (currency == null)
             return;
 
-        System.out.println(currency);
+        System.out.println("------------------------------\n" + currency);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CurrencyService extends AbstractService {
         Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", "Currencies", 0d, null);
 
         for (Currency currency : currencies)
-            if (currency!=null && (currency.getIsoCode().equals(isoCode))) {
+            if (currency != null && (currency.getIsoCode().equals(isoCode))) {
                 System.out.println("Error: Currencies must be unique!");
                 return;
             }
@@ -93,9 +93,9 @@ public class CurrencyService extends AbstractService {
 
         System.out.println("2. Unregister currency");
         System.out.println("3. List all currencies");
-        System.out.println("4. List term currency by id");
+        System.out.println("4. List currency by ISO code");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 4);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Cards", 1, 4);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();

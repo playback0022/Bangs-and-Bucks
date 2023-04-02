@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public abstract class BankingEntity {
     private String email;
     private String phoneNumber;
-    private LocalDate joinDate;
+    private final LocalDate joinDate;
 
     public BankingEntity(String email, String phoneNumber) {
         this.setEmail(email);

@@ -25,58 +25,76 @@ public class TransactionService {
     }
 
     private void printAllEntities() {
-        for (int i = 0; i < transactions.size(); i++)
-            System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+        for (int i = 0; i < transactions.size(); i++) {
+            System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+            if (i == transactions.size() - 1)
+                System.out.println("------------------------------");
+        }
     }
 
     private void printEntityById() {
         int id = ValidationHandler.intValidator("Enter the id of the desired transaction: ", "Invalid id!", "Transactions", 0, transactions.size() - 1);
-        System.out.println(transactions.get(id) + "\n");
+        System.out.println("------------------------------\nTransaction id: " + id + "\n" + transactions.get(id) + "\n------------------------------");
     }
 
     private void printEntitiesBySender() {
         BankingEntity entity = BankingEntityService.getService().getBankingEntity("Transactions");
 
+        if (entity == null)
+            return;
+
         System.out.println("All transaction issued by: " + entity.getIdentity());
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getSourceAccount().getHolder() == entity)
-                System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+                System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
     }
 
     private void printEntitiesByRecipient() {
         BankingEntity entity = BankingEntityService.getService().getBankingEntity("Transactions");
 
+        if (entity == null)
+            return;
+
         System.out.println("All transactions issued to: " + entity.getIdentity());
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getDestinationAccount().getHolder() == entity)
-                System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+                System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
     }
 
     private void printEntitiesBySourceAccount() {
         Account account = AccountService.getService().getAccount("Transactions");
 
+        if (account == null)
+            return;
+
         System.out.println("All transactions issued from the account:\n" + account.toString());
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getSourceAccount() == account)
-                System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+                System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
     }
 
     private void printEntitiesByDestinationAccount() {
         Account account = AccountService.getService().getAccount("Transactions");
 
+        if (account == null)
+            return;
+
         System.out.println("All transactions issued to the account:\n" + account.toString());
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getDestinationAccount() == account)
-                System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+                System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
     }
 
     private void printEntitiesByCard() {
         Card card = CardService.getService().getCard("Transactions");
 
+        if (card == null)
+            return;
+
         System.out.println("All transactions issued using card:\n" + card.toString());
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getCardUsedForPayment() == card)
-                System.out.println("Transaction id: " + i + "\n" + transactions.get(i) + "\n");
+                System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
     }
 
     public void registerEntity(Transaction transaction) {
@@ -85,7 +103,7 @@ public class TransactionService {
 
     public void initService() {
         if (transactions.isEmpty()) {
-            System.out.println(">>> No transactions issued so far.");
+            System.out.println("Warning: No transactions issued so far.");
             return;
         }
 

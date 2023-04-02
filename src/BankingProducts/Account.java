@@ -8,7 +8,7 @@ public class Account {
     private final BankingEntity holder;
     private final String IBAN;
     protected final Currency currency;
-    protected Double balance=0d;
+    protected Double balance = 0d;
 
     public Account(BankingEntity holder, Currency currency) {
         Random randomIBANGenerator = new Random();
@@ -23,7 +23,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return  "Holder: " + holder.getIdentity() + "\nIBAN: " + IBAN + "\nBalance: " + balance + currency.getIsoCode();
+        return "Holder: " + holder.getIdentity() + "\nIBAN: " + IBAN + "\nBalance: " + balance + currency.getIsoCode();
     }
 
     public BankingEntity getHolder() {

@@ -22,13 +22,13 @@ public class Transaction {
     @Override
     public String toString() {
         String base = "Source Account: " + sourceAccount.getIBAN() +
-                "\nDestination Account:" + destinationAccount.getIBAN() +
+                "\nDestination Account: " + destinationAccount.getIBAN() +
                 "\nAmount:" + amountTransferredInSourceCurrency +
                 sourceAccount.currency.getIsoCode() +
                 "\nDate:" + date + "\nDescription: '" + description + '\'';
 
         if (cardUsedForPayment != null)
-            base += "\nCard (ending in): " + cardUsedForPayment.getNumber().substring(11);
+            base += "\nCard (ending in): " + cardUsedForPayment.getNumber().substring(12);
 
         return base;
     }

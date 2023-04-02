@@ -22,7 +22,7 @@ public final class Individual extends BankingEntity {
 
     @Override
     public String toString() {
-        return  "First name: " + this.firstName + "\nLast name: " +
+        return "First name: " + this.firstName + "\nLast name: " +
                 this.lastName + "\nBirth date: " + this.birthDate +
                 "\nJoin date: " + this.getJoinDate() + "\nContact:" +
                 "\n\t- e-mail: " + this.getEmail() + "\n\t- phone number: " +
