@@ -41,18 +41,6 @@ public class Transaction {
         return destinationAccount;
     }
 
-    public Double getAmountTransferredInSourceCurrency() {
-        return amountTransferredInSourceCurrency;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public Card getCardUsedForPayment() {
         return cardUsedForPayment;
     }

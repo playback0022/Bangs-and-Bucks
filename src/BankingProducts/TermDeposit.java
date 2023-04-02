@@ -50,20 +50,4 @@ public class TermDeposit {
     public BankingEntity getOwner() {
         return owner;
     }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public LocalDate getConstitutionDate() {
-        return constitutionDate;
-    }
-
-    public Integer getDurationInMonths() {
-        return durationInMonths;
-    }
-
-    public Double getInterestRate() {
-        return interestRate;
-    }
 }

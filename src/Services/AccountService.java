@@ -7,6 +7,7 @@ import BankingProducts.Transaction;
 import BankingEntities.BankingEntity;
 import Helpers.ValidationHandler;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -153,6 +154,26 @@ public class AccountService extends AbstractService {
         TransactionService.getService().registerEntity(resultingTransaction);
     }
 
+    private void updateBalance() {
+        Account savingsAccount = getAccount("Accounts");
+
+        if (savingsAccount == null)
+            return;
+
+        if (!(savingsAccount instanceof SavingsAccount)) {
+            System.out.println("Error: Simple accounts don't have and 'update balance' feature!");
+            return;
+        }
+
+        if (LocalDate.now().getDayOfMonth() != 1) {
+            System.out.println("Error: Balance updates occur only on the first of every month!");
+            return;
+        }
+
+        ((SavingsAccount) savingsAccount).updateBalance();
+        System.out.println("Balance updated successfully!");
+    }
+
     @Override
     public void initService() {
         System.out.println(">>> Account Menu Initiated");
@@ -173,8 +194,9 @@ public class AccountService extends AbstractService {
         System.out.println("7. Make deposit");
         System.out.println("8. Perform withdraw");
         System.out.println("9. Perform transfer");
+        System.out.println("10. Update balance (savings accounts)");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 9);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 10);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();
@@ -186,7 +208,7 @@ public class AccountService extends AbstractService {
                 case 7 -> makeDeposit();
                 case 8 -> performWithdraw();
                 case 9 -> performTransfer();
+                case 10 -> updateBalance();
             }
-
     }
 }

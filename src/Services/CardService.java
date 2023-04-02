@@ -79,6 +79,11 @@ public class CardService extends AbstractService {
         if (card == null)
             return;
 
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            System.out.println("Error: This card has expired!");
+            return;
+        }
+
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", "Cards", 0d, null);
 
         card.depositSum(sum);
@@ -91,6 +96,11 @@ public class CardService extends AbstractService {
         if (card == null)
             return;
 
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            System.out.println("Error: This card has expired!");
+            return;
+        }
+
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
 
         card.withdrawSum(sum);
@@ -102,6 +112,11 @@ public class CardService extends AbstractService {
 
         if (card == null)
             return;
+
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            System.out.println("Error: This card has expired!");
+            return;
+        }
 
         Account destinationAccount = AccountService.getService().getAccount("Cards");
 

@@ -33,10 +33,6 @@ public class Card {
         return expiryDate;
     }
 
-    public String getCVV() {
-        return CVV;
-    }
-
     public void depositSum(Double sum) {
         account.balance += sum;
     }
