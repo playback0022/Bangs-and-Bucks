@@ -25,8 +25,12 @@ public class AccountService extends AbstractService {
     }
 
     public Account getAccount(String shellIndicator) {
-        int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", shellIndicator, 0, accounts.size());
+        if (accounts.isEmpty()) {
+            System.out.println(">>> No account registered so far.");
+            return null;
+        }
 
+        int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", shellIndicator, 0, accounts.size());
         return accounts.get(id);
     }
 
@@ -48,6 +52,11 @@ public class AccountService extends AbstractService {
     }
 
     public void printEntity() {
+        if (accounts.isEmpty()) {
+            System.out.println(">>> No account registered so far.");
+            return;
+        }
+
         int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", "Accounts", 0, accounts.size());
 
         System.out.println("\nAccount id: " + id + "\n" + accounts.get(id));
@@ -57,7 +66,7 @@ public class AccountService extends AbstractService {
         int choice = ValidationHandler.intValidator("Do you wish to open a simple account(0) or a savings account(1)? ", "Invalid choice!", "Accounts", 0, 1);
 
         BankingEntity holder = BankingEntityService.getService().getBankingEntity("Accounts");
-        Currency currency = CurrencyService.getService().getCurrency();
+        Currency currency = CurrencyService.getService().getCurrency("Accounts");
 
         if (currency == null) {
             System.out.println("Account registration failed!");

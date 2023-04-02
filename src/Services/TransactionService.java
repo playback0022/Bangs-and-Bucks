@@ -83,7 +83,12 @@ public class TransactionService {
         transactions.add(transaction);
     }
 
-    public void serviceInit() {
+    public void initService() {
+        if (transactions.isEmpty()) {
+            System.out.println(">>> No transactions issued so far.");
+            return;
+        }
+
         System.out.println(">>> Transaction Menu Initiated");
         System.out.println("1. List all transactions");
         System.out.println("2. List transaction by id");
@@ -96,27 +101,13 @@ public class TransactionService {
         HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Transactions", 1, 7);
         for (Integer choice : choices)
             switch (choice) {
-                case 1:
-                    printAllEntities();
-                    break;
-                case 2:
-                    printEntityById();
-                    break;
-                case 3:
-                    printEntitiesBySender();
-                    break;
-                case 4:
-                    printEntitiesByRecipient();
-                    break;
-                case 5:
-                    printEntitiesBySourceAccount();
-                    break;
-                case 6:
-                    printEntitiesByDestinationAccount();
-                    break;
-                case 7:
-                    printEntitiesByCard();
-                    break;
+                case 1 -> printAllEntities();
+                case 2 -> printEntityById();
+                case 3 -> printEntitiesBySender();
+                case 4 -> printEntitiesByRecipient();
+                case 5 -> printEntitiesBySourceAccount();
+                case 6 -> printEntitiesByDestinationAccount();
+                case 7 -> printEntitiesByCard();
             }
     }
 }

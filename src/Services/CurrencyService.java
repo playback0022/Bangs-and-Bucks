@@ -6,7 +6,7 @@ import Helpers.ValidationHandler;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CurrencyService {
+public class CurrencyService extends AbstractService {
     private final Set<Currency> currencies;
     private static CurrencyService service = null;
 
@@ -22,6 +22,11 @@ public class CurrencyService {
     }
 
     public Currency getCurrency(String shellIndicator) {
+        if (currencies.isEmpty()) {
+            System.out.println(">>> No currencies registered so far.");
+            return null;
+        }
+
         String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the desired currency: ", "Invalid ISO code!", shellIndicator, "[A-Z]{3}");
 
         for (Currency currency : currencies)
@@ -32,12 +37,12 @@ public class CurrencyService {
         return null;
     }
 
-    public void printAllCurrencies() {
+    public void printAllEntities() {
         for (Currency currency: currencies)
             System.out.println(currency);
     }
 
-    public void printCurrency() {
+    public void printEntity() {
         Currency currency = getCurrency("Currencies");
 
         if (currency == null)

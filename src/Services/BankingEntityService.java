@@ -24,10 +24,13 @@ public class BankingEntityService extends AbstractService {
         return service;
     }
 
-    // used by BankingProductService to query banking entities
     public BankingEntity getBankingEntity(String shellIndicator) {
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 0, entities.size());
+        if (entities.isEmpty()) {
+            System.out.println(">>> No banking entities registered so far.");
+            return null;
+        }
 
+        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 0, entities.size());
         return entities.get(id);
     }
 
@@ -49,6 +52,11 @@ public class BankingEntityService extends AbstractService {
     }
 
     public void printEntity() {
+        if (entities.isEmpty()) {
+            System.out.println(">>> No banking entities registered so far.");
+            return;
+        }
+
         int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", "Banking Entities", 0, entities.size());
 
         System.out.println("\nBanking entity id: " + id + "\n" + entities.get(id));

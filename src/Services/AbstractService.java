@@ -1,8 +1,9 @@
 package Services;
 
 public abstract class AbstractService {
-    public abstract void printAllEntities();
-    public abstract void printEntity();
-    public abstract void registerEntity();
-    public abstract void unregisterEntity();
+    protected abstract void printAllEntities();
+    protected abstract void printEntity();
+    protected abstract void registerEntity();
+    protected abstract void unregisterEntity();
+    public abstract void initService();
 }

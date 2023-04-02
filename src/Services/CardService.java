@@ -25,6 +25,11 @@ public class CardService extends AbstractService {
     }
 
     public Card getCard(String shellIndicator) {
+        if (cards.isEmpty()) {
+            System.out.println(">>> No cards registered so far.");
+            return null;
+        }
+
         int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", shellIndicator, 0, cards.size());
         return cards.get(id);
     }
@@ -35,6 +40,11 @@ public class CardService extends AbstractService {
     }
 
     public void printEntity() {
+        if (cards.isEmpty()) {
+            System.out.println(">>> No cards registered so far.");
+            return;
+        }
+
         int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size());
         System.out.println("\nAccount id: " + id + "\n" + cards.get(id));
     }
