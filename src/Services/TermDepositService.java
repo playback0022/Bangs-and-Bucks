@@ -61,9 +61,10 @@ public class TermDepositService extends AbstractService {
 
         Double amount = ValidationHandler.doubleValidator("Enter the amount to be deposited: ", "Invalid amount!", "Term Deposits", 0d, account.getBalance());
         Integer durationInMonths = ValidationHandler.intValidator("Enter the duration of the term deposit (in months): ", "Invalid duration!", "Term Deposits", 3, 13);
-        Double interestRate = (double) ValidationHandler.intValidator("Enter the interest rate of the term deposit: ", "Invalid interest rate!", "Term Deposits", 0, 20) / 100;
+        Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the term deposit: ", "Invalid interest rate!", "Term Deposits", 0d, 1d);
 
         deposits.add(new TermDeposit(account.getHolder(), amount, account.getCurrency(), durationInMonths, interestRate));
+        account.withdrawSum(amount);    // sum must be withdrawn from the source account
         System.out.println("Term Deposit registered successfully!");
     }
 
@@ -83,6 +84,7 @@ public class TermDepositService extends AbstractService {
         if (receivingAccount == null)
             return;
 
+        // verifying that the receiving account's holder is the same as the current term deposit's
         while (termDeposit.getOwner() != receivingAccount.getHolder()) {
             System.out.println("Error: The holder of the receiving account and the owner of the term deposit don't match!");
             receivingAccount = AccountService.getService().getAccount("Term Deposits");

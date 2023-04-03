@@ -11,6 +11,7 @@ public class Account {
     protected Double balance = 0d;
 
     public Account(BankingEntity holder, Currency currency) {
+        // generating various parts of a Romanian IBAN
         Random randomIBANGenerator = new Random();
         int securityCode = randomIBANGenerator.nextInt(100);
         int accountNumberFirstSection = randomIBANGenerator.nextInt(10000000);

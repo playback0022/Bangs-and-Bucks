@@ -132,7 +132,7 @@ public class CardService extends AbstractService {
         card.withdrawSum(sum);
         destinationAccount.depositSum(sum * card.getAccount().getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
 
-        // this will be passed to the registration method of the TransactionService class
+        // 'resultingTransaction' will be passed to the registration method of the TransactionService class, with the card reference set
         Transaction resultingTransaction = new Transaction(card.getAccount(), destinationAccount, sum, description, card);
         TransactionService.getService().registerEntity(resultingTransaction);
     }

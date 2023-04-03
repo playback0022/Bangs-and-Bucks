@@ -37,10 +37,6 @@ public final class Individual extends BankingEntity {
         this.lastName = lastName;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }

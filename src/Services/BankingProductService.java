@@ -4,6 +4,7 @@ import Helpers.ValidationHandler;
 
 import java.util.HashSet;
 
+// proxy service for all the other Banking Product services
 public class BankingProductService {
     private BankingProductService() {
     }

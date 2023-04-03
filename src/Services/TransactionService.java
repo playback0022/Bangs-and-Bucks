@@ -14,7 +14,7 @@ public class TransactionService {
     private static TransactionService service = null;
 
     private TransactionService() {
-        transactions = new ArrayList<Transaction>();
+        transactions = new ArrayList<>();
     }
 
     public static TransactionService getService() {
@@ -67,7 +67,7 @@ public class TransactionService {
         if (account == null)
             return;
 
-        System.out.println("All transactions issued from the account:\n" + account.toString());
+        System.out.println("All transactions issued from the account:\n" + account);
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getSourceAccount() == account)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
@@ -79,7 +79,7 @@ public class TransactionService {
         if (account == null)
             return;
 
-        System.out.println("All transactions issued to the account:\n" + account.toString());
+        System.out.println("All transactions issued to the account:\n" + account);
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getDestinationAccount() == account)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
@@ -91,7 +91,7 @@ public class TransactionService {
         if (card == null)
             return;
 
-        System.out.println("All transactions issued using card:\n" + card.toString());
+        System.out.println("All transactions issued using card:\n" + card);
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getCardUsedForPayment() == card)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));

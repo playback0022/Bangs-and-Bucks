@@ -21,6 +21,7 @@ public class CurrencyService extends AbstractService {
         return service;
     }
 
+    // get method by isoCode
     public Currency getCurrency(String shellIndicator) {
         if (currencies.isEmpty()) {
             System.out.println("Warning: No currencies registered so far.");
@@ -58,8 +59,9 @@ public class CurrencyService extends AbstractService {
         String isoCode = ValidationHandler.stringValidator("Enter the ISO code of the currency: ", "Invalid ISO code!", "Currencies", "[A-Z]{3}");
         Double dollarConversionFactor = ValidationHandler.doubleValidator("Enter the dollar conversion factor of the currency: ", "Invalid dollar conversion factor!", "Currencies", 0d, null);
 
+        // verifying that the provided iso code is not assigned to another existing currency
         for (Currency currency : currencies)
-            if (currency != null && (currency.getIsoCode().equals(isoCode))) {
+            if (currency.getIsoCode().equals(isoCode)) {
                 System.out.println("Error: Currencies must be unique!");
                 return;
             }
@@ -95,7 +97,7 @@ public class CurrencyService extends AbstractService {
         System.out.println("3. List all currencies");
         System.out.println("4. List currency by ISO code");
 
-        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Cards", 1, 4);
+        HashSet<Integer> choices = (HashSet<Integer>) ValidationHandler.choicesValidator("Currencies", 1, 4);
         for (Integer choice : choices)
             switch (choice) {
                 case 1 -> registerEntity();

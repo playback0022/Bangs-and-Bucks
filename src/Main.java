@@ -3,12 +3,20 @@ import Helpers.ValidationHandler;
 import Services.BankingEntityService;
 import Services.BankingProductService;
 
+// main entry-point to the banking services
 class Bank {
     private Bank() {
     }
 
     private static void getHelp() {
-        // -1 to exit choice menu
+        System.out.println(">>> HELP");
+        System.out.println("- Navigation through the menus is achieved by providing the number\ncorresponding to the specific options you wish to select");
+        System.out.println("- Multiple choices can be specified when selecting the desired options");
+        System.out.println("- Option '-1' is reserved as the exit code of any choice-based menu");
+        System.out.println("- Once any innermost option of a menu has been selected, the operation\ncannot be canceled");
+        System.out.println("- Percentages will be provided as decimals");
+        System.out.println("- Dates must be provided in the following format: 'yyyy-MM-dd'");
+        System.out.println("- The provided phone numbers should be fully-qualified (the country\ncode must be included)");
     }
 
     public static void initBank() {

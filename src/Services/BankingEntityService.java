@@ -136,7 +136,9 @@ public class BankingEntityService extends AbstractService {
                 }
             }
 
-        } else {
+        }
+
+        else {
             System.out.println("3.Name");
 
             Set<Integer> companyChoices = ValidationHandler.choicesValidator("Banking Entities", 1, 3);

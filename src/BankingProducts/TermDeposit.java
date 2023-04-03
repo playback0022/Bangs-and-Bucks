@@ -30,11 +30,13 @@ public class TermDeposit {
     }
 
     public void emptyDeposit(Account receivingAccount) {
+        // term deposit can only be emptied once
         if (emptied) {
             System.out.println("Error: Deposit already emptied!");
             return;
         }
 
+        // emptying a term deposit before the maturation date is forbidden
         if (LocalDate.now().isBefore(constitutionDate.plusMonths(durationInMonths))) {
             System.out.println("Error: The deposit is locked until " + constitutionDate.plusMonths(durationInMonths) + "!");
             return;

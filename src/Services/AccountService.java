@@ -16,7 +16,7 @@ public class AccountService extends AbstractService {
     private static AccountService service = null;
 
     private AccountService() {
-        accounts = new ArrayList<Account>();
+        accounts = new ArrayList<>();
     }
 
     public static AccountService getService() {
@@ -27,6 +27,7 @@ public class AccountService extends AbstractService {
     }
 
     public Account getAccount(String shellIndicator) {
+        // warning should be propagated to the source
         if (accounts.isEmpty()) {
             System.out.println("Warning: No account registered so far.");
             return null;
@@ -85,15 +86,11 @@ public class AccountService extends AbstractService {
 
         Account account = null;
         switch (choice) {
-            case 0:
-                account = new Account(holder, currency);
-                break;
-
-            case 1:
+            case 0 -> account = new Account(holder, currency);
+            case 1 -> {
                 Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the savings account: ", "Invalid interest rate!", "Accounts", 0d, 100d);
-
                 account = new SavingsAccount(holder, currency, interestRate / 100);
-                break;
+            }
         }
 
         accounts.add(account);
@@ -152,7 +149,7 @@ public class AccountService extends AbstractService {
         sourceAccount.withdrawSum(sum);
         destinationAccount.depositSum(sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
 
-        // this will be passed to the registration method of the TransactionService class
+        // 'resultingTransaction' will be passed to the registration method of the TransactionService class
         Transaction resultingTransaction = new Transaction(sourceAccount, destinationAccount, sum, description, null);
         TransactionService.getService().registerEntity(resultingTransaction);
     }
