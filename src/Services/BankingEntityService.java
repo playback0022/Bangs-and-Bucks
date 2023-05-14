@@ -3,8 +3,12 @@ package Services;
 import BankingEntities.BankingEntity;
 import BankingEntities.Company;
 import BankingEntities.Individual;
+import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +20,36 @@ public class BankingEntityService extends AbstractService {
 
     private BankingEntityService() {
         entities = new ArrayList<>();
+
+        // 'Individual' entries are retrieved first
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            ResultSet databaseIndividuals = statement.executeQuery("SELECT * FROM INDIVIDUAL i join BANKING_ENTITY b on i.id = b.id");
+
+            // iterating through returned result set, creating objects
+            // based on the column contents and adding them to the set;
+            while (databaseIndividuals.next()) {
+                Individual currentIndividual = new Individual(databaseIndividuals.getString("email"), databaseIndividuals.getString("phone_number"), databaseIndividuals.getString("first_name"), databaseIndividuals.getString("last_name"), databaseIndividuals.getDate("birth_date").toLocalDate());
+                entities.add(databaseIndividuals.getInt("id"), currentIndividual);
+            }
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
+
+        // 'Company' entries are retrieved separately
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            ResultSet databaseCompanies = statement.executeQuery("SELECT * FROM COMPANY c join BANKING_ENTITY b on c.id = b.id");
+
+            // iterating through returned result set, creating objects
+            // based on the column contents and adding them to the set;
+            while (databaseCompanies.next()) {
+                Company currentCurrency = new Company(databaseCompanies.getString("email"), databaseCompanies.getString("phone_number"), databaseCompanies.getString("name"));
+                entities.add(databaseCompanies.getInt("id"), currentCurrency);
+            }
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
     }
 
     public static BankingEntityService getService() {

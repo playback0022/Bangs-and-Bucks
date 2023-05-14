@@ -1,8 +1,12 @@
 package Services;
 
 import BankingProducts.Currency;
+import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,8 +14,25 @@ public class CurrencyService extends AbstractService {
     private final Set<Currency> currencies;
     private static CurrencyService service = null;
 
+    // mirroring database state, as to avoid unnecessary queries;
+    // whenever state changing actions take place, they will be executed both
+    // onto the local set and onto the database table to maintain integrity;
     private CurrencyService() {
         currencies = new HashSet<>();
+
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            ResultSet databaseCurrencies = statement.executeQuery("SELECT * FROM CURRENCY");
+
+            // iterating through returned result set, creating objects
+            // based on the column contents and adding them to the set;
+            while (databaseCurrencies.next()) {
+                Currency currentCurrency = new Currency(databaseCurrencies.getString("iso_code"), databaseCurrencies.getDouble("dollar_conversion_factor"));
+                currencies.add(currentCurrency);
+            }
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
     }
 
     public static CurrencyService getService() {
@@ -67,6 +88,15 @@ public class CurrencyService extends AbstractService {
             }
 
         currencies.add(new Currency(isoCode, dollarConversionFactor));
+
+        // register new entity into database
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            statement.executeUpdate("INSERT INTO CURRENCY (iso_code, dollar_conversion_factor) VALUES ('" + isoCode + "', "  + dollarConversionFactor + ")");
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
+
         System.out.println("Currency built successfully!");
     }
 
@@ -78,6 +108,14 @@ public class CurrencyService extends AbstractService {
             return;
 
         currencies.remove(currency);
+
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            statement.executeUpdate("DELETE FROM CURRENCY where iso_code=" + currency.getIsoCode());
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
+
         System.out.println("Currency removed successfully!");
     }
 
