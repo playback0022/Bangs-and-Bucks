@@ -329,6 +329,14 @@ public class BankingEntityService extends AbstractService {
             return;
 
         entities.remove(entity);
+
+        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+            statement.executeUpdate("DELETE FROM BANKING_ENTITY where id=" + entity.getID());
+        }
+        catch (SQLException exception) {
+            System.exit(1);
+        }
+
         System.out.println("Entity unregistered successfully!");
     }
 
