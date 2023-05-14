@@ -3,6 +3,8 @@ import Helpers.ValidationHandler;
 import Services.BankingEntityService;
 import Services.BankingProductService;
 
+import java.sql.*;
+
 // main entry-point to the banking services
 class Bank {
     private Bank() {
@@ -30,7 +32,7 @@ class Bank {
             System.out.println("4. Exit");
 
 
-            int choice = ValidationHandler.intValidator("Enter your desired option: ", "Invalid option!", "Main", 0, 4);
+            int choice = ValidationHandler.intValidator("Enter your desired option: ", "Invalid option!", "Main", 1, 4);
             switch (choice) {
                 case 1 -> BankingEntityService.getService().initService();
                 case 2 -> BankingProductService.initService();
@@ -38,11 +40,35 @@ class Bank {
                 case 4 -> exit = true;
             }
         }
+
+        System.out.println("[*] Goodbye!");
     }
 }
 
 public class Main {
+    private static Connection bootstrapDatabase (String name, String port, String database, String user, String password) {
+        System.out.println("[*] Attempting to establish database connection...");
+
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:mariadb://" + name + ":" + port + "/" + database + "?user=" + user + "&password=" + password);
+        }
+        catch (SQLException exception) {
+            System.out.println("[*] Connection failed!");
+            System.out.println("[*] The following error occurred: '" + exception.getMessage() + "'.");
+            System.out.println("[*] Exiting...");
+            System.exit(1);
+        }
+
+        System.out.println("[*] Connection established successfully.");
+        System.out.println("[*] Welcome to 'Bangs & Bucks'!\n");
+
+        return connection;
+    }
+
     public static void main(String[] args) {
+        Connection connection = bootstrapDatabase(args[0], args[1], args[2], args[3], args[4]);
+
         Bank.initBank();
     }
 }
