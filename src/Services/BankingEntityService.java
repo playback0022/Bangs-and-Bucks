@@ -70,7 +70,7 @@ public class BankingEntityService extends AbstractService {
             return null;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 1, entities.get(entities.size() - 1).getID());
+        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 1, Integer.MAX_VALUE);
 
         for (BankingEntity entity : entities)
             if (entity.getID() == id)
@@ -208,22 +208,62 @@ public class BankingEntityService extends AbstractService {
                     case 1 -> {
                         String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "Banking Entities", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
                         individual.setEmail(email);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE BANKING_ENTITY SET email='" + email + "' WHERE id=" + individual.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 2 -> {
                         String phoneNumber = ValidationHandler.stringValidator("Enter the phone number of the entity: ", "Invalid phone number!", "Banking Entities", "^\\+\\d{1,3}[- .]?\\d{7,15}");
                         individual.setPhoneNumber(phoneNumber);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE BANKING_ENTITY SET phone_number='" + phoneNumber + "' WHERE id=" + individual.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 3 -> {
                         String firstName = ValidationHandler.stringValidator("Enter the first name of the individual: ", "Invalid first name!", "Banking Entities", "[A-Z][a-z]*");
                         individual.setFirstName(firstName);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE INDIVIDUAL SET first_name='" + firstName + "' WHERE id=" + individual.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 4 -> {
                         String lastName = ValidationHandler.stringValidator("Enter the last name of the individual: ", "Invalid last name!", "Banking Entities", "[A-Z][a-z]*");
                         individual.setLastName(lastName);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE INDIVIDUAL SET last_name='" + lastName + "' WHERE id=" + individual.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 5 -> {
                         LocalDate birthDate = ValidationHandler.dateValidator("Enter the birth date of the individual: ", "Invalid birth date!", "Banking Entities", 18);
                         individual.setBirthDate(birthDate);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE INDIVIDUAL SET birth_date='" + birthDate + "' WHERE id=" + individual.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                 }
             }
@@ -241,14 +281,38 @@ public class BankingEntityService extends AbstractService {
                     case 1 -> {
                         String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "Banking Entities", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
                         company.setEmail(email);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE BANKING_ENTITY SET email='" + email + "' WHERE id=" + company.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 2 -> {
                         String phoneNumber = ValidationHandler.stringValidator("Enter the phone number of the entity: ", "Invalid phone number!", "Banking Entities", "^\\+\\d{1,3}[- .]?\\d{7,15}");
                         company.setPhoneNumber(phoneNumber);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE BANKING_ENTITY SET phone_number='" + phoneNumber + "' WHERE id=" + company.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                     case 3 -> {
                         String name = ValidationHandler.stringValidator("Enter the name of the company: ", "Invalid name!", "Banking Entities", ".+");
                         company.setName(name);
+
+                        // mirroring changes
+                        try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                            statement.executeUpdate("UPDATE COMPANY SET name='" + name + "' WHERE id=" + company.getID());
+                        }
+                        catch (SQLException e) {
+                            System.exit(1);
+                        }
                     }
                 }
             }
