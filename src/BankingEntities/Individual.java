@@ -7,8 +7,8 @@ public final class Individual extends BankingEntity {
     private String lastName;
     private LocalDate birthDate;
 
-    public Individual(String email, String phoneNumber, String firstName, String lastName, LocalDate birthDate) {
-        super(email, phoneNumber);
+    public Individual(int id, String email, String phoneNumber, LocalDate joinDate, String firstName, String lastName, LocalDate birthDate) {
+        super(id, email, phoneNumber, joinDate);
 
         this.setFirstName(firstName);
         this.setLastName(lastName);
@@ -22,11 +22,13 @@ public final class Individual extends BankingEntity {
 
     @Override
     public String toString() {
-        return "First name: " + this.firstName + "\nLast name: " +
-                this.lastName + "\nBirth date: " + this.birthDate +
+        return  "Banking entity id: " + this.getID() +
+                "\nFirst name: " + this.firstName +
+                "\nLast name: " + this.lastName +
+                "\nBirth date: " + this.birthDate +
                 "\nJoin date: " + this.getJoinDate() + "\nContact:" +
-                "\n\t- e-mail: " + this.getEmail() + "\n\t- phone number: " +
-                this.getPhoneNumber();
+                "\n\t- e-mail: " + this.getEmail() +
+                "\n\t- phone number: " + this.getPhoneNumber();
     }
 
     public void setFirstName(String firstName) {

@@ -1,10 +1,12 @@
 package BankingEntities;
 
+import java.time.LocalDate;
+
 public final class Company extends BankingEntity {
     private String name;
 
-    public Company(String email, String phoneNumber, String name) {
-        super(email, phoneNumber);
+    public Company(int id, String email, String phoneNumber, LocalDate joinDate, String name) {
+        super(id, email, phoneNumber, joinDate);
 
         this.setName(name);
     }
@@ -16,8 +18,10 @@ public final class Company extends BankingEntity {
 
     @Override
     public String toString() {
-        return "Company name: " + this.name + "\nJoin date: " + this.getJoinDate()
-                + "\nContact:" + "\n\t- e-mail: " + this.getEmail() +
+        return "Banking entity id: " + this.getID() +
+                "\nCompany name: " + this.name +
+                "\nJoin date: " + this.getJoinDate() + "\nContact:" +
+                "\n\t- e-mail: " + this.getEmail() +
                 "\n\t- phone number: " + this.getPhoneNumber();
     }
 

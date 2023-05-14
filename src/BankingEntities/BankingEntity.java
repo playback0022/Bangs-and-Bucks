@@ -3,17 +3,23 @@ package BankingEntities;
 import java.time.LocalDate;
 
 public abstract class BankingEntity {
+    private final int id;
     private String email;
     private String phoneNumber;
     private final LocalDate joinDate;
 
-    public BankingEntity(String email, String phoneNumber) {
-        this.setEmail(email);
-        this.setPhoneNumber(phoneNumber);
-        this.joinDate = LocalDate.now();
+    public BankingEntity(int id, String email, String phoneNumber, LocalDate joinDate) {
+        this.id = id;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.joinDate = joinDate;
     }
 
     public abstract String getIdentity();
+
+    public int getID() {
+        return id;
+    }
 
     public String getEmail() {
         return email;

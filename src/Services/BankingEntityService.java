@@ -6,6 +6,7 @@ import BankingEntities.Individual;
 import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,10 +27,12 @@ public class BankingEntityService extends AbstractService {
             ResultSet databaseIndividuals = statement.executeQuery("SELECT * FROM INDIVIDUAL i join BANKING_ENTITY b on i.id = b.id");
 
             // iterating through returned result set, creating objects
-            // based on the column contents and adding them to the set;
+            // based on the column contents and adding them to the array;
             while (databaseIndividuals.next()) {
-                Individual currentIndividual = new Individual(databaseIndividuals.getString("email"), databaseIndividuals.getString("phone_number"), databaseIndividuals.getString("first_name"), databaseIndividuals.getString("last_name"), databaseIndividuals.getDate("birth_date").toLocalDate());
-                entities.add(databaseIndividuals.getInt("id"), currentIndividual);
+                Individual currentIndividual = new Individual(databaseIndividuals.getInt("id"), databaseIndividuals.getString("email"),
+                                                            databaseIndividuals.getString("phone_number"), databaseIndividuals.getDate("join_date").toLocalDate(),
+                                                            databaseIndividuals.getString("first_name"), databaseIndividuals.getString("last_name"), databaseIndividuals.getDate("birth_date").toLocalDate());
+                entities.add(currentIndividual);
             }
         }
         catch (SQLException exception) {
@@ -41,10 +44,12 @@ public class BankingEntityService extends AbstractService {
             ResultSet databaseCompanies = statement.executeQuery("SELECT * FROM COMPANY c join BANKING_ENTITY b on c.id = b.id");
 
             // iterating through returned result set, creating objects
-            // based on the column contents and adding them to the set;
+            // based on the column contents and adding them to the array;
             while (databaseCompanies.next()) {
-                Company currentCurrency = new Company(databaseCompanies.getString("email"), databaseCompanies.getString("phone_number"), databaseCompanies.getString("name"));
-                entities.add(databaseCompanies.getInt("id"), currentCurrency);
+                Company currentCompany = new Company(databaseCompanies.getInt("id"), databaseCompanies.getString("email"),
+                                                    databaseCompanies.getString("phone_number"), databaseCompanies.getDate("join_date").toLocalDate(),
+                                                    databaseCompanies.getString("name"));
+                entities.add(currentCompany);
             }
         }
         catch (SQLException exception) {
@@ -65,14 +70,20 @@ public class BankingEntityService extends AbstractService {
             return null;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 0, entities.size() - 1);
-        return entities.get(id);
+        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", shellIndicator, 1, entities.get(entities.size() - 1).getID());
+
+        for (BankingEntity entity : entities)
+            if (entity.getID() == id)
+                return entity;
+
+        System.out.println("Error: The provided id could not be found!");
+        return null;
     }
 
     @Override
     protected void printAllEntities() {
         for (int i = 0; i < entities.size(); i++) {
-            System.out.println("------------------------------\nBanking entity id: " + i + "\n" + entities.get(i));
+            System.out.println("------------------------------\n" + entities.get(i));
             if (i == entities.size() - 1)
                 System.out.println("------------------------------");
         }
@@ -81,13 +92,13 @@ public class BankingEntityService extends AbstractService {
     private void printAllIndividuals() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Individual)
-                System.out.println("------------------------------\nBanking entity id: " + i + "\n" + entities.get(i));
+                System.out.println("------------------------------\n" + entities.get(i));
     }
 
     private void printAllCompanies() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Company)
-                System.out.println("------------------------------\nBanking entity id: " + i + "\n" + entities.get(i));
+                System.out.println("------------------------------\n" + entities.get(i));
     }
 
     @Override
@@ -97,9 +108,12 @@ public class BankingEntityService extends AbstractService {
             return;
         }
 
-        int id = ValidationHandler.intValidator("Enter the id of the desired banking entity: ", "Invalid id!", "Banking Entities", 0, entities.size());
+        BankingEntity entity = this.getBankingEntity("Banking Entities");
 
-        System.out.println("------------------------------\nBanking entity id: " + id + "\n" + entities.get(id) + "\n------------------------------");
+        if (entity == null)
+            return;
+
+        System.out.println("------------------------------\n" + entity + "\n------------------------------");
     }
 
     @Override
@@ -115,11 +129,55 @@ public class BankingEntityService extends AbstractService {
                 String firstName = ValidationHandler.stringValidator("Enter the first name of the individual: ", "Invalid first name!", "Banking Entities", "[A-Z][a-z]*");
                 String lastName = ValidationHandler.stringValidator("Enter the last name of the individual: ", "Invalid last name!", "Banking Entities", "[A-Z][a-z]*");
                 LocalDate birthDate = ValidationHandler.dateValidator("Enter the birth date of the individual: ", "Invalid birth date!", "Banking Entities", 18);
-                newEntity = new Individual(email, phoneNumber, firstName, lastName, birthDate);
+                int id = 0;
+
+                // register new entity into database
+                try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                    statement.executeUpdate("INSERT INTO BANKING_ENTITY (email, phone_number, join_date) VALUES ('" + email + "', '"  + phoneNumber + "', " +  "CURDATE())", Statement.RETURN_GENERATED_KEYS);
+                    // the auto-incremented id in the database should correspond to the
+                    // in-memory copy, therefore the generated id is requested and stored
+                    ResultSet generatedKeys = statement.getGeneratedKeys();
+                    generatedKeys.next();
+                    id = generatedKeys.getInt(1);
+                }
+                catch (SQLException exception) {
+                    System.exit(1);
+                }
+
+                try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                    statement.executeUpdate("INSERT INTO INDIVIDUAL VALUES ('" + id + "', '" + firstName + "', '"  + lastName + "', '" + birthDate + "')");
+                }
+                catch (SQLException exception) {
+                    System.exit(1);
+                }
+
+                newEntity = new Individual(id, email, phoneNumber, LocalDate.now(), firstName, lastName, birthDate);
             }
             case 1 -> {
                 String name = ValidationHandler.stringValidator("Enter the name of the company: ", "Invalid name!", "Banking Entities", ".+");
-                newEntity = new Company(email, phoneNumber, name);
+                int id = 0;
+
+                // register new entity into database
+                try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                    statement.executeUpdate("INSERT INTO BANKING_ENTITY (email, phone_number, join_date) VALUES ('" + email + "', '"  + phoneNumber + "', " +  "CURDATE())", Statement.RETURN_GENERATED_KEYS);
+                    // the auto-incremented id in the database should correspond to the
+                    // in-memory copy, therefore the generated id is requested and stored
+                    ResultSet generatedKeys = statement.getGeneratedKeys();
+                    generatedKeys.next();
+                    id = generatedKeys.getInt(1);
+                }
+                catch (SQLException exception) {
+                    System.exit(1);
+                }
+
+                try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
+                    statement.executeUpdate("INSERT INTO COMPANY VALUES ('" + id + "', '" + name + "')");
+                }
+                catch (SQLException exception) {
+                    System.exit(1);
+                }
+
+                newEntity = new Company(id, email, phoneNumber, LocalDate.now(), name);
             }
         }
 
