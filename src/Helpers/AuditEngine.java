@@ -30,11 +30,4 @@ public class AuditEngine {
             System.exit(1);
         }
     }
-
-//    public static void main(String[] args) {
-//        initialize("logs.txt");
-//
-//        ArrayList<AdjustmentLog> logs = new ArrayList<>();
-//        log("testing", logs);
-//    }
 }

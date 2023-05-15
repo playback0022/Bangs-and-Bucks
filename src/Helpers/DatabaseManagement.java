@@ -23,9 +23,8 @@ public class DatabaseManagement {
 
         System.out.println("[*] Connection established successfully.");
 
-        // Inheritance will be modelled by using separate tables for each class and referencing the
+        // Inheritance will be modelled using separate tables for each class and referencing the
         // primary key of the superclass (Banking Entity) in both subclasses (Individual and Company);
-
         try (Statement statement = connection.createStatement()) {
             System.out.println("[*] Creating 'Banking Entity' table...");
             statement.executeUpdate("create table BANKING_ENTITY (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, " +
