@@ -54,7 +54,7 @@ public class Main {
         // 6 -> path of the logging file
         DatabaseManagement.performBootstrap(args[0], args[1], args[2], args[3], args[4]);
 
-        if (args[5] == "1") {
+        if (args[5].equals("1")) {
             AuditEngine.initialize(args[6]);
         }
 

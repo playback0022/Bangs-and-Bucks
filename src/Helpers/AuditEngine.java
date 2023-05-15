@@ -21,12 +21,20 @@ public class AuditEngine {
         try {
             Files.writeString(path, "[LOG - " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + "] " + mainMessage + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
-            for (AdjustmentLog log : logs)
-                Files.writeString(path, log + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            if (logs != null)
+                for (AdjustmentLog log : logs)
+                    Files.writeString(path, log + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
         catch (IOException e) {
             System.out.println("[*] Log file related error.");
             System.exit(1);
         }
     }
+
+//    public static void main(String[] args) {
+//        initialize("logs.txt");
+//
+//        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+//        log("testing", logs);
+//    }
 }

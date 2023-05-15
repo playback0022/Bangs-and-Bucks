@@ -23,9 +23,9 @@ public class Transaction {
     public String toString() {
         String base = "Source Account: " + sourceAccount.getIBAN() +
                 "\nDestination Account: " + destinationAccount.getIBAN() +
-                "\nAmount:" + amountTransferredInSourceCurrency +
+                "\nAmount: " + amountTransferredInSourceCurrency +
                 sourceAccount.currency.getIsoCode() +
-                "\nDate:" + date + "\nDescription: '" + description + '\'';
+                "\nDate: " + date + "\nDescription: '" + description + '\'';
 
         if (cardUsedForPayment != null)
             base += "\nCard (ending in): " + cardUsedForPayment.getNumber().substring(12);

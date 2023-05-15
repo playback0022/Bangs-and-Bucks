@@ -5,7 +5,7 @@ import BankingProducts.SavingsAccount;
 import BankingProducts.Currency;
 import BankingProducts.Transaction;
 import BankingEntities.BankingEntity;
-import Helpers.ValidationHandler;
+import Helpers.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,18 +44,24 @@ public class AccountService extends AbstractService {
             if (i == accounts.size() - 1)
                 System.out.println("------------------------------");
         }
+
+        AuditEngine.log("Accounts - List all accounts", null);
     }
 
     private void printAllPlainAccounts() {
         for (int i = 0; i < accounts.size(); i++)
             if (!(accounts.get(i) instanceof SavingsAccount))
                 System.out.println("------------------------------\nAccount id: " + i + "\n" + accounts.get(i));
+
+        AuditEngine.log("Accounts - List all simple accounts", null);
     }
 
     private void printAllSavingsAccounts() {
         for (int i = 0; i < accounts.size(); i++)
             if (accounts.get(i) instanceof SavingsAccount)
                 System.out.println("------------------------------\nAccount id: " + i + "\n" + accounts.get(i));
+
+        AuditEngine.log("Accounts - List all savings accounts", null);
     }
 
     @Override
@@ -68,6 +74,8 @@ public class AccountService extends AbstractService {
         int id = ValidationHandler.intValidator("Enter the id of the desired account: ", "Invalid id!", "Accounts", 0, accounts.size() - 1);
 
         System.out.println("------------------------------\nAccount id: " + id + "\n" + accounts.get(id) + "\n------------------------------");
+
+        AuditEngine.log("Accounts - List account by id (" + id + ")", null);
     }
 
     @Override
@@ -86,10 +94,14 @@ public class AccountService extends AbstractService {
 
         Account account = null;
         switch (choice) {
-            case 0 -> account = new Account(holder, currency);
+            case 0 -> {
+                account = new Account(holder, currency);
+                AuditEngine.log("Accounts - Register simple account in '" + currency.getIsoCode() + "' with id=" + (accounts.size() - 1), null);
+            }
             case 1 -> {
                 Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the savings account: ", "Invalid interest rate!", "Accounts", 0d, 100d);
                 account = new SavingsAccount(holder, currency, interestRate / 100);
+                AuditEngine.log("Accounts - Register savings account in '" + currency.getIsoCode() + "' with id=" + (accounts.size() - 1), null);
             }
         }
 
@@ -104,6 +116,7 @@ public class AccountService extends AbstractService {
         if (account == null)
             return;
 
+        AuditEngine.log("Accounts - Unregister account with id=" + accounts.indexOf(account), null);
         accounts.remove(account);
         System.out.println("Account unregistered successfully!");
     }
@@ -115,8 +128,16 @@ public class AccountService extends AbstractService {
             return;
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", "Accounts", 0d, null);
+        // both sums should be stored in order to be logged
+        Double currentBalance = account.getBalance();
+        Double newBalance = account.getBalance() + sum;
 
         account.depositSum(sum);
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("balance", currentBalance.toString(), newBalance.toString()));
+
+        AuditEngine.log("Accounts - Make deposit into account with id=" + accounts.indexOf(account), logs);
         System.out.println("Deposit successfully processed!");
     }
 
@@ -127,8 +148,16 @@ public class AccountService extends AbstractService {
             return;
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Accounts", 0d, account.getBalance());
+        // both sums should be stored in order to be logged
+        Double currentBalance = account.getBalance();
+        Double newBalance = account.getBalance() - sum;
 
         account.withdrawSum(sum);
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("balance", currentBalance.toString(), newBalance.toString()));
+
+        AuditEngine.log("Accounts - Perform withdraw", logs);
         System.out.println("Amount successfully withdrawn!");
     }
 
@@ -146,12 +175,23 @@ public class AccountService extends AbstractService {
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Accounts", 0d, sourceAccount.getBalance());
         String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", "Accounts", ".+");
 
+        Double currentBalanceSource = sourceAccount.getBalance();
+        Double newBalanceSource = sourceAccount.getBalance() - sum;
+        Double currentBalanceDestination = destinationAccount.getBalance();
+        Double newBalanceDestination = destinationAccount.getBalance() + sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor();
+
         sourceAccount.withdrawSum(sum);
         destinationAccount.depositSum(sum * sourceAccount.getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
 
         // 'resultingTransaction' will be passed to the registration method of the TransactionService class
         Transaction resultingTransaction = new Transaction(sourceAccount, destinationAccount, sum, description, null);
         TransactionService.getService().registerEntity(resultingTransaction);
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("source account balance", currentBalanceSource.toString(), newBalanceSource.toString()));
+        logs.add(new AdjustmentLog("destination account balance", currentBalanceDestination.toString(), newBalanceDestination.toString()));
+
+        AuditEngine.log("Accounts - Perform transfer from source-account-id=" + accounts.indexOf(sourceAccount) + " to destination-account-id=" + accounts.indexOf(destinationAccount), logs);
     }
 
     private void updateBalance() {
