@@ -29,17 +29,17 @@ public class TermDeposit {
                 "\nInterest rate: " + interestRate * 100 + "%" + "\nEmptied: " + emptied;
     }
 
-    public void emptyDeposit(Account receivingAccount) {
+    public Boolean emptyDeposit(Account receivingAccount) {
         // term deposit can only be emptied once
         if (emptied) {
             System.out.println("Error: Deposit already emptied!");
-            return;
+            return Boolean.FALSE;
         }
 
         // emptying a term deposit before the maturation date is forbidden
         if (LocalDate.now().isBefore(constitutionDate.plusMonths(durationInMonths))) {
             System.out.println("Error: The deposit is locked until " + constitutionDate.plusMonths(durationInMonths) + "!");
-            return;
+            return Boolean.FALSE;
         }
 
         amount += interestRate * amount;
@@ -47,6 +47,7 @@ public class TermDeposit {
         receivingAccount.depositSum(convertedAmount);
         emptied = true;
         System.out.println("Term Deposit successfully emptied!");
+        return Boolean.TRUE;
     }
 
     public BankingEntity getOwner() {

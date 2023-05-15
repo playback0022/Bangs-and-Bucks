@@ -1,6 +1,7 @@
 package Services;
 
 import BankingProducts.Currency;
+import Helpers.AuditEngine;
 import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
@@ -63,6 +64,8 @@ public class CurrencyService extends AbstractService {
     protected void printAllEntities() {
         for (Currency currency : currencies)
             System.out.println("------------------------------\n" + currency);
+
+        AuditEngine.log("Currencies - List all currencies", null);
     }
 
     @Override
@@ -73,6 +76,7 @@ public class CurrencyService extends AbstractService {
             return;
 
         System.out.println("------------------------------\n" + currency);
+        AuditEngine.log("Currencies - List currency by ISO code (" + currency.getIsoCode() + ")", null);
     }
 
     @Override
@@ -97,6 +101,7 @@ public class CurrencyService extends AbstractService {
             System.exit(1);
         }
 
+        AuditEngine.log("Currencies - Register currency with ISO-code=" + isoCode, null);
         System.out.println("Currency built successfully!");
     }
 
@@ -110,12 +115,13 @@ public class CurrencyService extends AbstractService {
         currencies.remove(currency);
 
         try (Statement statement = DatabaseManagement.acquireConnection().createStatement()) {
-            statement.executeUpdate("DELETE FROM CURRENCY where iso_code=" + currency.getIsoCode());
+            statement.executeUpdate("DELETE FROM CURRENCY where iso_code='" + currency.getIsoCode() + "'");
         }
         catch (SQLException exception) {
             System.exit(1);
         }
 
+        AuditEngine.log("Currencies - Unregister currency with ISO-code=" + currency.getIsoCode(), null);
         System.out.println("Currency removed successfully!");
     }
 

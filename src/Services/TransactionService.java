@@ -4,6 +4,7 @@ import BankingEntities.BankingEntity;
 import BankingProducts.Account;
 import BankingProducts.Card;
 import BankingProducts.Transaction;
+import Helpers.AuditEngine;
 import Helpers.ValidationHandler;
 
 import java.util.ArrayList;
@@ -30,11 +31,15 @@ public class TransactionService {
             if (i == transactions.size() - 1)
                 System.out.println("------------------------------");
         }
+
+        AuditEngine.log("Transactions - List all transactions", null);
     }
 
     private void printEntityById() {
         int id = ValidationHandler.intValidator("Enter the id of the desired transaction: ", "Invalid id!", "Transactions", 0, transactions.size() - 1);
         System.out.println("------------------------------\nTransaction id: " + id + "\n" + transactions.get(id) + "\n------------------------------");
+
+        AuditEngine.log("Transactions - List transaction by id (" + id + ")", null);
     }
 
     private void printEntitiesBySender() {
@@ -47,6 +52,8 @@ public class TransactionService {
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getSourceAccount().getHolder() == entity)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+
+        AuditEngine.log("Transactions - List transactions by sender with banking-entity-id=" + entity.getID(), null);
     }
 
     private void printEntitiesByRecipient() {
@@ -59,6 +66,8 @@ public class TransactionService {
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getDestinationAccount().getHolder() == entity)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+
+        AuditEngine.log("Transactions - List transactions by recipient with banking-entity-id=" + entity.getID(), null);
     }
 
     private void printEntitiesBySourceAccount() {
@@ -71,6 +80,8 @@ public class TransactionService {
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getSourceAccount() == account)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+
+        AuditEngine.log("Transactions - List transactions by source account", null);
     }
 
     private void printEntitiesByDestinationAccount() {
@@ -83,6 +94,8 @@ public class TransactionService {
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getDestinationAccount() == account)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+
+        AuditEngine.log("Transactions - List transactions by destination account", null);
     }
 
     private void printEntitiesByCard() {
@@ -95,6 +108,8 @@ public class TransactionService {
         for (int i = 0; i < transactions.size(); i++)
             if (transactions.get(i).getCardUsedForPayment() == card)
                 System.out.println("------------------------------\nTransaction id: " + i + "\n" + transactions.get(i));
+
+        AuditEngine.log("Transactions - List transactions by card", null);
     }
 
     public void registerEntity(Transaction transaction) {

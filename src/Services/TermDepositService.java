@@ -2,6 +2,7 @@ package Services;
 
 import BankingProducts.Account;
 import BankingProducts.TermDeposit;
+import Helpers.AuditEngine;
 import Helpers.ValidationHandler;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class TermDepositService extends AbstractService {
             if (i == deposits.size() - 1)
                 System.out.println("------------------------------");
         }
+
+        AuditEngine.log("Term Deposits - List all term deposits", null);
     }
 
     @Override
@@ -50,6 +53,8 @@ public class TermDepositService extends AbstractService {
 
         int id = ValidationHandler.intValidator("Enter the id of the desired term deposit: ", "Invalid id!", "Term Deposits", 0, deposits.size() - 1);
         System.out.println("------------------------------\nTerm Deposit id: " + id + "\n" + deposits.get(id));
+
+        AuditEngine.log("Term Deposits - List term deposit by id (" + id + ")", null);
     }
 
     @Override
@@ -65,6 +70,8 @@ public class TermDepositService extends AbstractService {
 
         deposits.add(new TermDeposit(account.getHolder(), amount, account.getCurrency(), durationInMonths, interestRate));
         account.withdrawSum(amount);    // sum must be withdrawn from the source account
+
+        AuditEngine.log("Term Deposits - Register term deposit with id=" + (deposits.size() - 1), null);
         System.out.println("Term Deposit registered successfully!");
     }
 
@@ -72,6 +79,7 @@ public class TermDepositService extends AbstractService {
     protected void unregisterEntity() {
         TermDeposit termDeposit = getTermDeposit("Term Deposits");
 
+        AuditEngine.log("Term Deposits - Unregister term deposit with id=" + deposits.indexOf(termDeposit), null);
         deposits.remove(termDeposit);
         System.out.println("Term Deposit unregistered successfully!");
     }
@@ -90,7 +98,8 @@ public class TermDepositService extends AbstractService {
             receivingAccount = AccountService.getService().getAccount("Term Deposits");
         }
 
-        termDeposit.emptyDeposit(receivingAccount);
+        if (termDeposit.emptyDeposit(receivingAccount))
+            AuditEngine.log("Term Deposits - Empty deposit with id=" + deposits.indexOf(termDeposit), null);
     }
 
     @Override

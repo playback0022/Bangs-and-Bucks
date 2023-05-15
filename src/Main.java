@@ -56,9 +56,11 @@ public class Main {
 
         if (args[5].equals("1")) {
             AuditEngine.initialize(args[6]);
+            AuditEngine.log("New session initiated!", null);
         }
 
         Bank.initBank();
+
         DatabaseManagement.closeConnection();
     }
 }
