@@ -3,10 +3,11 @@ package Services;
 import BankingEntities.BankingEntity;
 import BankingEntities.Company;
 import BankingEntities.Individual;
+import Helpers.AdjustmentLog;
+import Helpers.AuditEngine;
 import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -87,18 +88,24 @@ public class BankingEntityService extends AbstractService {
             if (i == entities.size() - 1)
                 System.out.println("------------------------------");
         }
+
+        AuditEngine.log("Banking Entities - List all banking entities", null);
     }
 
     private void printAllIndividuals() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Individual)
                 System.out.println("------------------------------\n" + entities.get(i));
+
+        AuditEngine.log("Banking Entities - List all individuals", null);
     }
 
     private void printAllCompanies() {
         for (int i = 0; i < entities.size(); i++)
             if (entities.get(i) instanceof Company)
                 System.out.println("------------------------------\n" + entities.get(i));
+
+        AuditEngine.log("Banking Entities - List all banking companies", null);
     }
 
     @Override
@@ -114,6 +121,7 @@ public class BankingEntityService extends AbstractService {
             return;
 
         System.out.println("------------------------------\n" + entity + "\n------------------------------");
+        AuditEngine.log("Banking Entities - List banking entity by id (" + entity.getID() + ")", null);
     }
 
     @Override
@@ -152,6 +160,7 @@ public class BankingEntityService extends AbstractService {
                 }
 
                 newEntity = new Individual(id, email, phoneNumber, LocalDate.now(), firstName, lastName, birthDate);
+                AuditEngine.log("Banking Entities - Register individual with id=" + id, null);
             }
             case 1 -> {
                 String name = ValidationHandler.stringValidator("Enter the name of the company: ", "Invalid name!", "Banking Entities", ".+");
@@ -178,6 +187,7 @@ public class BankingEntityService extends AbstractService {
                 }
 
                 newEntity = new Company(id, email, phoneNumber, LocalDate.now(), name);
+                AuditEngine.log("Banking Entities - Register company with id=" + id, null);
             }
         }
 
@@ -200,13 +210,15 @@ public class BankingEntityService extends AbstractService {
             System.out.println("4.Last Name");
             System.out.println("5.Birth Date");
 
+            Individual individual = (Individual) entity;
             Set<Integer> individualChoices = ValidationHandler.choicesValidator("Banking Entities", 1, 5);
-            for (Integer choice : individualChoices) {
-                Individual individual = (Individual) entity;
+            ArrayList<AdjustmentLog> logs = new ArrayList<>();
 
+            for (Integer choice : individualChoices) {
                 switch (choice) {
                     case 1 -> {
                         String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "Banking Entities", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+                        logs.add(new AdjustmentLog("email", individual.getEmail(), email));
                         individual.setEmail(email);
 
                         // mirroring changes
@@ -219,6 +231,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 2 -> {
                         String phoneNumber = ValidationHandler.stringValidator("Enter the phone number of the entity: ", "Invalid phone number!", "Banking Entities", "^\\+\\d{1,3}[- .]?\\d{7,15}");
+                        logs.add(new AdjustmentLog("phone number", individual.getPhoneNumber(), phoneNumber));
                         individual.setPhoneNumber(phoneNumber);
 
                         // mirroring changes
@@ -231,6 +244,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 3 -> {
                         String firstName = ValidationHandler.stringValidator("Enter the first name of the individual: ", "Invalid first name!", "Banking Entities", "[A-Z][a-z]*");
+                        logs.add(new AdjustmentLog("first name", individual.getFirstName(), firstName));
                         individual.setFirstName(firstName);
 
                         // mirroring changes
@@ -243,6 +257,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 4 -> {
                         String lastName = ValidationHandler.stringValidator("Enter the last name of the individual: ", "Invalid last name!", "Banking Entities", "[A-Z][a-z]*");
+                        logs.add(new AdjustmentLog("last name", individual.getLastName(), lastName));
                         individual.setLastName(lastName);
 
                         // mirroring changes
@@ -255,6 +270,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 5 -> {
                         LocalDate birthDate = ValidationHandler.dateValidator("Enter the birth date of the individual: ", "Invalid birth date!", "Banking Entities", 18);
+                        logs.add(new AdjustmentLog("birth date", individual.getBirthDate().toString(), birthDate.toString()));
                         individual.setBirthDate(birthDate);
 
                         // mirroring changes
@@ -268,18 +284,22 @@ public class BankingEntityService extends AbstractService {
                 }
             }
 
+            AuditEngine.log("Banking Entities - Update individual with id=" + individual.getID(), logs);
+
         }
 
         else {
             System.out.println("3.Name");
 
+            Company company = (Company) entity;
             Set<Integer> companyChoices = ValidationHandler.choicesValidator("Banking Entities", 1, 3);
-            for (Integer choice : companyChoices) {
-                Company company = (Company) entity;
+            ArrayList<AdjustmentLog> logs = new ArrayList<>();
 
+            for (Integer choice : companyChoices) {
                 switch (choice) {
                     case 1 -> {
                         String email = ValidationHandler.stringValidator("Enter the email of the entity: ", "Invalid email!", "Banking Entities", "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+                        logs.add(new AdjustmentLog("email", company.getEmail(), email));
                         company.setEmail(email);
 
                         // mirroring changes
@@ -292,6 +312,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 2 -> {
                         String phoneNumber = ValidationHandler.stringValidator("Enter the phone number of the entity: ", "Invalid phone number!", "Banking Entities", "^\\+\\d{1,3}[- .]?\\d{7,15}");
+                        logs.add(new AdjustmentLog("phone number", company.getPhoneNumber(), phoneNumber));
                         company.setPhoneNumber(phoneNumber);
 
                         // mirroring changes
@@ -304,6 +325,7 @@ public class BankingEntityService extends AbstractService {
                     }
                     case 3 -> {
                         String name = ValidationHandler.stringValidator("Enter the name of the company: ", "Invalid name!", "Banking Entities", ".+");
+                        logs.add(new AdjustmentLog("name", company.getName(), name));
                         company.setName(name);
 
                         // mirroring changes
@@ -316,6 +338,8 @@ public class BankingEntityService extends AbstractService {
                     }
                 }
             }
+
+            AuditEngine.log("Banking Entities - Update company with id=" + company.getID(), logs);
         }
 
         System.out.println("Entity updated successfully!");
@@ -337,6 +361,7 @@ public class BankingEntityService extends AbstractService {
             System.exit(1);
         }
 
+        AuditEngine.log("Banking Entities - Unregister banking entity with id=" + entity.getID(), null);
         System.out.println("Entity unregistered successfully!");
     }
 

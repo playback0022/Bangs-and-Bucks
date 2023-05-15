@@ -3,6 +3,8 @@ package Services;
 import BankingProducts.Card;
 import BankingProducts.Account;
 import BankingProducts.Transaction;
+import Helpers.AdjustmentLog;
+import Helpers.AuditEngine;
 import Helpers.ValidationHandler;
 
 import java.time.LocalDate;
@@ -41,6 +43,8 @@ public class CardService extends AbstractService {
             if (i == cards.size() - 1)
                 System.out.println("------------------------------");
         }
+
+        AuditEngine.log("Cards - List all cards", null);
     }
 
     protected void printEntity() {
@@ -51,6 +55,7 @@ public class CardService extends AbstractService {
 
         int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size() - 1);
         System.out.println("------------------------------\nCard id: " + id + "\n" + cards.get(id) + "\n------------------------------");
+        AuditEngine.log("Cards - List card by id (" + id + ")", null);
     }
 
     protected void registerEntity() {
@@ -66,6 +71,7 @@ public class CardService extends AbstractService {
         String CVV = String.format("%03d", generator.nextLong(1000));
 
         cards.add(new Card(account, number, date, CVV));
+        AuditEngine.log("Cards - Register card with id=" + (cards.size() - 1), null);
         System.out.println("Card registered successfully!");
     }
 
@@ -73,6 +79,7 @@ public class CardService extends AbstractService {
         int id = ValidationHandler.intValidator("Enter the id of the desired card: ", "Invalid id!", "Cards", 0, cards.size() - 1);
 
         cards.remove(id);
+        AuditEngine.log("Cards - Unregister card with id=" + id, null);
         System.out.println("Card unregistered successfully!");
     }
 
@@ -88,8 +95,15 @@ public class CardService extends AbstractService {
         }
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to deposit: ", "Invalid amount!", "Cards", 0d, null);
+        Double currentBalance = card.getAccount().getBalance();
+        Double newBalance = card.getAccount().getBalance() + sum;
 
         card.depositSum(sum);
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("balance", currentBalance.toString(), newBalance.toString()));
+
+        AuditEngine.log("Cards - Make deposit into card with id=" + cards.indexOf(card), logs);
         System.out.println("Deposit successfully processed!");
     }
 
@@ -105,8 +119,14 @@ public class CardService extends AbstractService {
         }
 
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
+        Double currentBalance = card.getAccount().getBalance();
+        Double newBalance = card.getAccount().getBalance() - sum;
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("balance", currentBalance.toString(), newBalance.toString()));
 
         card.withdrawSum(sum);
+        AuditEngine.log("Cards - Perform withdraw from card with id=" + cards.indexOf(card), logs);
         System.out.println("Amount successfully withdrawn!");
     }
 
@@ -129,12 +149,23 @@ public class CardService extends AbstractService {
         Double sum = ValidationHandler.doubleValidator("Enter the amount you wish to withdraw: ", "Invalid amount!", "Cards", 0d, card.getAccount().getBalance());
         String description = ValidationHandler.stringValidator("Enter the description of the transfer: ", "Invalid description!", "Cards", ".+");
 
+        Double currentBalanceSource = card.getAccount().getBalance();
+        Double newBalanceSource = card.getAccount().getBalance() - sum;
+        Double currentBalanceDestination = destinationAccount.getBalance();
+        Double newBalanceDestination = destinationAccount.getBalance() + sum * card.getAccount().getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor();
+
         card.withdrawSum(sum);
         destinationAccount.depositSum(sum * card.getAccount().getCurrency().getDollarConversionFactor() / destinationAccount.getCurrency().getDollarConversionFactor());
 
         // 'resultingTransaction' will be passed to the registration method of the TransactionService class, with the card reference set
         Transaction resultingTransaction = new Transaction(card.getAccount(), destinationAccount, sum, description, card);
         TransactionService.getService().registerEntity(resultingTransaction);
+
+        ArrayList<AdjustmentLog> logs = new ArrayList<>();
+        logs.add(new AdjustmentLog("source account balance", currentBalanceSource.toString(), newBalanceSource.toString()));
+        logs.add(new AdjustmentLog("destination account balance", currentBalanceDestination.toString(), newBalanceDestination.toString()));
+
+        AuditEngine.log("Cards - Perform transfer from card with id=" + cards.indexOf(card), logs);
     }
 
     @Override

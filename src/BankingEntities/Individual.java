@@ -31,12 +31,24 @@ public final class Individual extends BankingEntity {
                 "\n\t- phone number: " + this.getPhoneNumber();
     }
 
+    public String getFirstName() {
+        return this.firstName;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return this.lastName;
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public LocalDate getBirthDate() {
+        return this.birthDate;
     }
 
     public void setBirthDate(LocalDate birthDate) {

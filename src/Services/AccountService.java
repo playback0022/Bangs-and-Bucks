@@ -96,12 +96,12 @@ public class AccountService extends AbstractService {
         switch (choice) {
             case 0 -> {
                 account = new Account(holder, currency);
-                AuditEngine.log("Accounts - Register simple account in '" + currency.getIsoCode() + "' with id=" + (accounts.size() - 1), null);
+                AuditEngine.log("Accounts - Register simple account in '" + currency.getIsoCode() + "' with id=" + accounts.size(), null);
             }
             case 1 -> {
                 Double interestRate = ValidationHandler.doubleValidator("Enter the interest rate of the savings account: ", "Invalid interest rate!", "Accounts", 0d, 100d);
                 account = new SavingsAccount(holder, currency, interestRate / 100);
-                AuditEngine.log("Accounts - Register savings account in '" + currency.getIsoCode() + "' with id=" + (accounts.size() - 1), null);
+                AuditEngine.log("Accounts - Register savings account in '" + currency.getIsoCode() + "' with id=" + accounts.size(), null);
             }
         }
 
