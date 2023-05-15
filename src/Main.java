@@ -1,3 +1,4 @@
+import Helpers.AuditEngine;
 import Helpers.DatabaseManagement;
 import Helpers.ValidationHandler;
 
@@ -44,7 +45,19 @@ class Bank {
 
 public class Main {
     public static void main(String[] args) {
+        // 0 -> domain name/IP address
+        // 1 -> port
+        // 2 -> database
+        // 3 -> username
+        // 4 -> password
+        // 5 -> logging (0/1)
+        // 6 -> path of the logging file
         DatabaseManagement.performBootstrap(args[0], args[1], args[2], args[3], args[4]);
+
+        if (args[5] == "1") {
+            AuditEngine.initialize(args[6]);
+        }
+
         Bank.initBank();
         DatabaseManagement.closeConnection();
     }
